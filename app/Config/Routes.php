@@ -51,9 +51,8 @@ $routes->group('dashboard', ['filter' => 'auth'],function ($routes) {
 
     $routes->group('transaksi', function ($routes) {
         $routes->get('/', 'TransaksiController::index');
-        $routes->get('delete/(:num)', 'TransaksiController::delete/$1');
         $routes->get('details/(:any)', 'TransaksiController::details/$1');
-        $routes->match(['POST', 'GET'], 'update/(:any)', 'TransaksiController::update/$1');
+        $routes->post('bayar/(:any)', 'TransaksiController::bayarHutang/$1');
     });
 
     $routes->group('transaction', function ($routes) {

@@ -32,6 +32,13 @@ class User extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '255',
             ],
+            'address' => [
+                'type' => 'TEXT',
+            ],
+            'phone_number' => [
+                'type' => 'VARCHAR',
+                'constraint' => '14',
+            ],
             'role' => [
                 'type' => 'ENUM("admin","customer")',
                 'default' => 'customer',

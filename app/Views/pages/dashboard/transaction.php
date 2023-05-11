@@ -52,6 +52,14 @@
                   <option value="tunai">Tunai</option>
               </select>
             </div>
+            <div class="form-group">
+              <label for="payment_type">Customer</label>
+              <select class="select2 form-control" id="user_id" name="user_id">
+                <?php foreach($user as $data): ?>
+                <option value="<?= $data['id'] ?>"><?= $data['name'] ?></option>
+                <?php endforeach ?>
+              </select>
+            </div>
             <button type="button" class="btn btn-success add-row-btn">Tambah Form</button>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
@@ -62,6 +70,13 @@
 <?= $this->endSection() ?>
 <?= $this->section('script') ?>
 <script>
+$(document).ready(function() {
+    $('.select2').select2({
+      placeholder: 'Select an option',
+      allowClear: true
+    });
+  });
+
 $(function() {
   // Add row button click event handler
   $('.add-row-btn').click(function() {
@@ -72,9 +87,18 @@ $(function() {
       <div class="form-group col-md-2">
         <label for="name">Nama Barang</label>
         <select class="form-control" id="name" name="name[]" data-price="" data-unit="">
-            <?php foreach($barang as $data): ?>
-            <option value="<?= $data['id'] ?>" data-price="<?= $data['selling_price'] ?>" data-unit="<?= $data['unit'] ?>"><?= $data['name'] ?></option>
-            <?php endforeach ?>
+          <?php if (empty($barang)): ?>
+            <option value="" disabled selected>Tidak ada barang!</option>
+          <?php else: ?>
+            <?php foreach ($barang as $data): ?>
+              <option value="<?= $data['id'] ?>"
+                      data-price="<?= $data['selling_price'] ?>"
+                      data-unit="<?= $data['unit'] ?>">
+                <?= $data['name'] ?>
+              </option>
+            <?php endforeach; ?>
+          <?php endif; ?>  
+
         </select>
       </div>
       <div class="form-group col-md-2">

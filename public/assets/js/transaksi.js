@@ -5,64 +5,75 @@ function showDetails(transactionCode) {
         dataType: 'json',
         success: function(response) {
             if (response.success) {
-                // populate the table with the transaction items
-                var items = response.data;
+                // populate the table with the transaction transaksi
+                var transaksi = response.data;
                 var total = 0;
                 var table = $('#form').find('table tbody');
                 table.empty();
-                for (var i = 0; i < items.length; i++) {
-                    var item = items[i];
+                for (var i = 0; i < transaksi.length; i++) {
+                    var item = transaksi[i];
+                    var sellingPrice = Number(item.selling_price);
                     var subTotal = item.selling_price * item.quantity;
                     total += subTotal;
-                    table.append('<tr>' +
+                    table.append(
+                        '<tr>' +
                         '<td>' + (i + 1) + '</td>' +
                         '<td>' + item.name + '</td>' +
-                        '<td>IDR ' + item.selling_price + '</td>' +
-                        '<td>' + item.quantity + '</td>' +
-                        '<td>' + item.unit + '</td>' +
-                        '<td>IDR ' + subTotal + '</td>' +
-                        '</tr>');
+                        '<td>' + sellingPrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) + '</td>' +
+                        '<td>' + item.quantity + ' ' + item.unit + '</td>' +
+                        '<td>' + subTotal.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) + '</td>' +
+                        '</tr>'
+                    );
                 }
 
                 // set the total price
-                $('#waktu').text(response.data.created_at);
-                $('#kode_transaksi').text(response.data.transaction_code);
+                $('#waktu').text(response.data[0].created_at);
+                $('#kode_transaksi').text(response.data[0].transaction_code);
+                $('#customer').text(response.data[0].nama_user);
+                if (response.data[0].status == 'no_payment') {
+                    $('#status').html('<span class="badge badge-danger">' + 'Belum Bayar' + '</span>');
+                } else if (response.data[0].status == 'done') {
+                    $('#status').html('<span class="badge badge-success">' + 'Sudah Bayar' + '</span>');
+                } else {
+                    $('#status').html('<span class="badge badge-warning">' + 'Bayar Setengah' + '</span>');
+                }
+                if (response.data[0].status == 'no_payment') {
+                    $('#button-bayar').attr('onclick', 'bayarHutang("' + response.data[0].transaction_code + '")').attr('hidden', false);
+                }
                 $('#myModal').modal('show');
-                $('#total').text(total);
+                $('#total').text(total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }));
             }
         },
-        error: function(xhr, status, error) {
+        error: function(error) {
             console.log(error);
         }
     });
 }
 
-function save() {
-    const id = $('#id').val();
-    const url = id ? `${base_url}dashboard/items/update/${id}` : `${base_url}dashboard/items`;
-    
+function bayarHutang(kode) {
+    const url = `${base_url}dashboard/transaksi/bayar/${kode}`;
+
     $.ajax({
-      url,
-      type: 'POST',
-      data: $('#form').serialize(),
-      dataType: 'JSON',
-      success: ({ success, message }) => {
-        alert(message);
-        if (success) {
-          window.location.href = `${base_url}dashboard/items`;
-        }
-      },
-      error: () => {
-        alert('An error occurred while processing your request.');
-      },
-    });
-  }
-  
+        url,
+        type: 'POST',
+        data: $('#detail-form').serialize(),
+        dataType: 'JSON',
+        success: ({ success, message }) => {
+          alert(message);
+          if (success) {
+            window.location.href = `${base_url}dashboard/transaksi`;
+          }
+        },
+        error: () => {
+          alert('An error occurred while processing your request.');
+        },
+      });
+} 
 
 function deleteData(id) {
     if (confirm('Anda yakin ingin melakukan operasi ini?')) {
         $.ajax({
-            url: `${base_url}dashboard/items/delete/${id}`,
+            url: `${base_url}dashboard/transaksi/delete/${id}`,
             type: 'GET',
             dataType: 'JSON',
             success: function (response) {

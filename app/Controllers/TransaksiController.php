@@ -11,16 +11,28 @@ class TransaksiController extends BaseController
     {
         helper('number');
         $model = new Transactions();
+        //dd($model->getDetails('TRX-fe385986bccb619d79709b5bfb4ded3f'));
         $data = [
-            'content' => $model->findAll(),
+            'content' => $model->joinTransactionsWithUsers(),
         ];
         return view('pages/dashboard/list_transaction', $data);
     }
 
-    public function update($transactionCode)
+    public function bayarHutang($transactionCode)
     {
-  
+        $model = new Transactions();
+        $data = [
+            'status' => 'done',
+            'updated_at' => date('Y-m-d H:i:s'),
+        ];
+        $model->where('transaction_code', $transactionCode)->set($data)->update();
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Berhasil melakukan pembayaran',
+        ]);
     }
+    
+    
 
     public function details($transactionCode)
     {

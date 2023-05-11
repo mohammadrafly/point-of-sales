@@ -66,7 +66,6 @@
                                             <th>Harga Jual</th>
                                             <th>Harga Beli</th>
                                             <th>Stock</th>
-                                            <th>Satuan</th>
                                             <th>Dibuat tanggal</th>
                                             <th>Diperbarui tanggal</th>
                                             <th>Opsi</th>
@@ -77,10 +76,17 @@
                                         <tr>
                                             <td><?= $data['name'] ?></td>
                                             <td><?= $data['description'] ?></td>
-                                            <td><?= $data['selling_price'] ?></td>
-                                            <td><?= $data['purchase_price'] ?></td>
-                                            <td><?= $data['stock'] ?></td>
-                                            <td><?= $data['unit'] ?></td>
+                                            <?php if($data['selling_price'] == NULL): ?>
+                                                <td><?= $data['selling_price'] ?></td>
+                                            <?php else: ?>
+                                                <td><?= number_to_currency($data['selling_price'], 'IDR') ?></td>
+                                            <?php endif ?>
+                                            <?php if($data['purchase_price'] == NULL): ?>
+                                                <td><?= $data['purchase_price'] ?></td>
+                                            <?php else: ?>
+                                                <td><?= number_to_currency($data['purchase_price'], 'IDR') ?></td>
+                                            <?php endif ?>
+                                            <td><?= $data['stock'] ?>  <?= $data['unit'] ?></td>
                                             <td><?= $data['created_at'] ?></td>
                                             <td><?= $data['updated_at'] ?></td>
                                             <td>

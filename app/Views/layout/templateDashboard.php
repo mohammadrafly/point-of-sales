@@ -13,8 +13,10 @@
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <link href="<?= base_url('assets/css/sb-admin-2.min.css') ?>" rel="stylesheet">
     <link href="<?= base_url('assets/vendors/datatables/dataTables.bootstrap4.min.css') ?>" rel="stylesheet">
+    <?= $this->renderSection('head') ?>
 </head>
 <body id="page-top">
     <div id="wrapper">
@@ -114,6 +116,7 @@
             </div>
         </div>
     </div>
+
     <script src="<?= base_url('assets/js/Main.js') ?>"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script src="<?= base_url('assets/vendors/jquery/jquery.min.js') ?>"></script>
@@ -123,6 +126,9 @@
     <script src="<?= base_url('assets/vendors/datatables/jquery.dataTables.min.js') ?>"></script>
     <script src="<?= base_url('assets/vendors/datatables/dataTables.bootstrap4.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/demo/datatables-demo.js') ?>"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="<?= base_url('assets/js/jspdf.debug.js') ?>"></script>
+	<script src="<?= base_url('assets/libs/html2pdf.js') ?>"></script>
     <?= $this->renderSection('script') ?>
 </body>
 </html>

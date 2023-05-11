@@ -28,6 +28,14 @@
                                             <input hidden type="text" id="id" name="id">
                                         </div>
                                         <div class="form-group">
+                                            <label for="inputName">Nomor Hp</label>
+                                            <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="masukkan nomor hp">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputName">Alamat</label>
+                                            <textarea type="text" class="form-control" id="address" name="address"></textarea>
+                                        </div>
+                                        <div id="username-input" class="form-group">
                                             <label for="inputName">Username</label>
                                             <input type="text" class="form-control" id="username" name="username" placeholder="masukkan username">
                                         </div>
@@ -35,7 +43,7 @@
                                             <label for="inputName">Password</label>
                                             <input type="password" class="form-control" id="password" name="password" placeholder="masukkan password">
                                         </div>
-                                        <div class="form-group">
+                                        <div id="email-input" class="form-group">
                                             <label for="inputName">Email</label>
                                             <input type="email" class="form-control" id="email" name="email" placeholder="masukkan email">
                                         </div>
@@ -63,6 +71,8 @@
                                             <th>Username</th>
                                             <th>Email</th>
                                             <th>Nama</th>
+                                            <th>Nomor HP</th>
+                                            <th>Alamat</th>
                                             <th>Role</th>
                                             <th>Dibuat tanggal</th>
                                             <th>Diperbarui tanggal</th>
@@ -75,6 +85,8 @@
                                             <td><?= $data['username'] ?></td>
                                             <td><?= $data['email'] ?></td>
                                             <td><?= $data['name'] ?></td>
+                                            <td><?= $data['phone_number'] ?></td>
+                                            <td><?= $data['address'] ?></td>
                                             <td><?= $data['role'] ?></td>
                                             <td><?= $data['created_at'] ?></td>
                                             <td><?= $data['updated_at'] ?></td>

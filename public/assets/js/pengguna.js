@@ -9,13 +9,15 @@ function edit(id) {
         {
             $('[name="id"]').val(respond.data.id);
             $('[name="name"]').val(respond.data.name);
-            $('[name="username"]').val(respond.data.username);
-            $('[name="email"]').val(respond.data.email);
             $('[name="role"]').val(respond.data.role);
+            $('[name="address"]').val(respond.data.address);
+            $('[name="phone_number"]').val(respond.data.phone_number);
             $('#myModal').modal('show');
             $('.modal-title').text('Edit Pengguna'); 
 
             $('#password-input').hide();
+            $('#username-input').hide();
+            $('#email-input').hide();
         },
         error: function (textStatus)
         {

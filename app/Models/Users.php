@@ -19,6 +19,8 @@ class Users extends Model
         'password',
         'name',
         'role',
+        'phone_number',
+        'address',
         'updated_at',
     ];
 
@@ -45,4 +47,11 @@ class Users extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    function findUserByRole($role)
+    {
+        return $this->db->table('users')
+                        ->where('role', $role)
+                        ->get()->getResultArray();
+    }
 }

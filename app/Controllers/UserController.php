@@ -21,6 +21,8 @@ class UserController extends BaseController
         $data = [
             'username' => $this->request->getPost('username'),
             'email' => $this->request->getPost('email'),
+            'address' => $this->request->getPost('address'),
+            'phone_number' => $this->request->getPost('phone_number'),
             'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
             'name' => $this->request->getPost('name'),
             'role' => $this->request->getPost('role'),
@@ -65,26 +67,28 @@ class UserController extends BaseController
         }
 
         $data = [
-            'username' => $this->request->getPost('username'),
-            'email' => $this->request->getPost('email'),
+            'address' => $this->request->getPost('address'),
+            'phone_number' => $this->request->getPost('phone_number'),
+            //'username' => $this->request->getPost('username'),
+            //'email' => $this->request->getPost('email'),
             'name' => $this->request->getPost('name'),
             'role' => $this->request->getPost('role'),
-            'updated_at' => date('H:i:s Y-m-d'),
+            'updated_at' => date('Y-m-d H:i:s'),
         ];
         
-        if ($model->like('username', $data['username'])->get()->getResultArray()) {
-            return $this->response->setJSON([
-                'success' => FALSE,
-                'message' => 'Gagal simpan data pengguna, username telah digunakan.'
-            ]);
-        }
+        //if ($model->like('username', $data['username'])->get()->getResultArray()) {
+        //    return $this->response->setJSON([
+        //        'success' => FALSE,
+        //        'message' => 'Gagal simpan data pengguna, username telah digunakan.'
+        //    ]);
+        //}
 
-        if ($model->like('email', $data['email'])->get()->getResultArray()) {
-            return $this->response->setJSON([
-                'success' => FALSE,
-                'message' => 'Gagal simpan data pengguna, email telah digunakan.'
-            ]);
-        }
+        //if ($model->like('email', $data['email'])->get()->getResultArray()) {
+        //    return $this->response->setJSON([
+        //        'success' => FALSE,
+        //        'message' => 'Gagal simpan data pengguna, email telah digunakan.'
+        //    ]);
+        //}
 
         if ($model->update($id, $data)) {
             return $this->response->setJSON([

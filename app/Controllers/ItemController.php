@@ -9,6 +9,7 @@ class ItemController extends BaseController
 {
     public function index()
     {
+        helper('number');
         $model = new Items();
 
         if ($this->request->getMethod(true) !== 'POST') {
