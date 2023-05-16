@@ -14,6 +14,7 @@ class Transactions extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
+        'cicil',
         'user_id',
         'id_item',
         'transaction_code',
@@ -21,6 +22,7 @@ class Transactions extends Model
         'payment_type',
         'total_price',
         'status',
+        'created_at',
         'updated_at'
     ];
 
@@ -64,7 +66,7 @@ class Transactions extends Model
             ->get()->getResultArray();
     }
 
-    function joinTransactionsWithUsers()
+    function joinTransactionsWithUsersByPaymentType($type)
     {
         return $this->db->table('transactions')
             ->select('
@@ -72,6 +74,38 @@ class Transactions extends Model
                 users.name as nama_user,
             ')
             ->join('users', 'transactions.user_id = users.id')
+            ->where('payment_type', $type)
             ->get()->getResultArray();
     }
+
+    public function getTotalByTransactionCode($transactionCode)
+    {
+        return $this->db->table('transactions')
+                    ->where('transaction_code', $transactionCode)
+                    ->selectSum('total_price')
+                    ->get()
+                    ->getRowArray()['total_price'];
+    }
+
+    public function RangeDate($start, $end, $payment, $status = '')
+    {
+        $query = $this->db->table('transactions')
+                ->select('
+                    transactions.*,
+                    transactions.created_at as waktu_transaksi,
+                    users.name as nama_user
+                ')
+                ->join('users', 'transactions.user_id = users.id')
+                ->where('transactions.payment_type', $payment)
+                ->where('transactions.created_at BETWEEN "'. date('Y-m-d', strtotime($start)). '" AND "'. date('Y-m-d', strtotime($end)).'"');
+    
+        if ($status !== '') {
+            $query->where('transactions.status', $status);
+        }
+    
+        $query->orderBy('transactions.created_at', 'DESC');
+        
+        $result = $query->get()->getResult();
+        return $result;
+    }    
 }

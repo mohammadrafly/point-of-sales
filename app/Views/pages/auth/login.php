@@ -76,7 +76,11 @@
                                 case 'admin':
                                     window.location.href = `${base_url}dashboard`;
                                     break;
+                                case 'kasir':
+                                    window.location.href = `${base_url}dashboard`;
+                                    break;
                                 default:
+                                    alert('Maaf anda tidak memiliki akses ke halaman ini!')
                                     window.location.href = `${base_url}`;
                                     break;
                             }

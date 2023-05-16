@@ -43,16 +43,42 @@ $routes->group('dashboard', ['filter' => 'auth'],function ($routes) {
         $routes->match(['POST', 'GET'], 'update/(:num)', 'ItemController::update/$1');
     });
 
-    $routes->group('users', function ($routes) {
+    $routes->group('customer', function ($routes) {
         $routes->match(['POST', 'GET'], '/', 'UserController::index');
         $routes->get('delete/(:num)', 'UserController::delete/$1');
         $routes->match(['POST', 'GET'], 'update/(:num)', 'UserController::update/$1');
     });
 
+    $routes->group('kasir', function ($routes) {
+        $routes->match(['POST', 'GET'], '/', 'UserController::indexKasir');
+        $routes->get('delete/(:num)', 'UserController::deleteKasir/$1');
+        $routes->match(['POST', 'GET'], 'update/(:num)', 'UserController::updateKasir/$1');
+    });
+
+    $routes->group('admin', function ($routes) {
+        $routes->match(['POST', 'GET'], '/', 'UserController::indexAdmin');
+        $routes->get('delete/(:num)', 'UserController::deleteAdmin/$1');
+        $routes->match(['POST', 'GET'], 'update/(:num)', 'UserController::updateAdmin/$1');
+    });
+
+    $routes->group('hutang/supplier', function ($routes) {
+        $routes->match(['POST', 'GET'], '/', 'HutangController::index');
+        $routes->get('delete/(:num)', 'HutangController::delete/$1');
+        $routes->get('details/(:any)', 'HutangController::details/$1');
+        $routes->post('bayar/(:num)', 'HutangController::bayar/$1');
+    });
+
     $routes->group('transaksi', function ($routes) {
-        $routes->get('/', 'TransaksiController::index');
+        $routes->get('type/tunai', 'TransaksiController::index');
+        $routes->get('type/hutang', 'TransaksiController::indexHutang');
         $routes->get('details/(:any)', 'TransaksiController::details/$1');
         $routes->post('bayar/(:any)', 'TransaksiController::bayarHutang/$1');
+    });
+
+    $routes->group('export', function ($routes) {
+        $routes->post('tunai', 'TransaksiController::exportTunai');
+        $routes->post('piutang', 'TransaksiController::exportHutang');
+        $routes->post('hutang', 'HutangController::exportHutang');
     });
 
     $routes->group('transaction', function ($routes) {

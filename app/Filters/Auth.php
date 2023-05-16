@@ -25,7 +25,7 @@ class Auth implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        if (!session()->get('isLoggedIn') && session()->get('role') !== 'admin') {
+        if (!session()->get('isLoggedIn') && session()->get('role') === 'customer') {
             return redirect()->to('/')->with('error', 'Access Denied.');
         }
     }

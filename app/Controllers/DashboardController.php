@@ -3,14 +3,28 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use CodeIgniter\Files\File;
-
+use App\Models\Items;
+use App\Models\Users;
+use App\Models\Transactions;
 
 class DashboardController extends BaseController
 {
     public function index()
     {
-        return view('pages/dashboard/index');
+        $json_file_path = WRITEPATH . 'data-toko.json';
+        $json_data = $this->read_file($json_file_path);
+        $modelBarang = new Items();
+        $modelUser = new Users();
+        $modelTransaksi = new Transactions();
+
+        $data = [
+            'jumlah_kasir' => $modelUser->where('role', 'kasir')->countAllResults(),
+            'jumlah_pengguna' => $modelUser->countAllResults(),
+            'jumlah_transaksi' => $modelTransaksi->countAllResults(),
+            'jumlah_barang' => $modelBarang->countAllResults(), 
+            'data_toko' => json_decode($json_data, true),
+        ];
+        return view('pages/dashboard/index', $data);
     }
 
     private function read_file($file_path) {

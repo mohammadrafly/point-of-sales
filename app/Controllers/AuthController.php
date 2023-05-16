@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\Users;
+use CodeIgniter\Log\Logger;
 
 class AuthController extends BaseController
 {
@@ -16,6 +17,7 @@ class AuthController extends BaseController
             'email' => $data['email'],
             'username' => $data['username'],
             'role' => $data['role'],
+            'login_time' => date('Y-m-d H:i:s')
         ]);
     }
 

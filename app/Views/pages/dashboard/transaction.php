@@ -7,44 +7,57 @@
         <h4>Transaksi</h4>
       </div>
       <div class="card-body">
-        <form id="my-form">
-            <div class="form-row">
-              <div class="form-group col-md-2">
-                <label for="name">Nama Barang</label>
-                <select class="form-control" id="name" name="name[]" data-price="" data-unit="">
-                    <?php foreach($barang as $data): ?>
-                    <option value="<?= $data['id'] ?>" data-price="<?= $data['selling_price'] ?>" data-unit="<?= $data['unit'] ?>"><?= $data['name'] ?></option>
-                    <?php endforeach ?>
-                </select>
-              </div>
-              <div class="form-group col-md-2">
-                <label for="harga_barang">Harga Barang</label>
-                <input type="text" class="form-control" id="harga_barang" name="harga_barang" readonly>
-              </div>
-              <div class="form-group col-md-2">
-                <label for="quantity">Jumlah</label>
-                <input type="number" class="form-control" id="quantity" name="quantity[]">
-              </div>
-              <div class="form-group col-md-2">
-                <label for="satuan">Satuan</label>
-                <input type="text" class="form-control" id="satuan" name="satuan" readonly>
-              </div>
-              <div class="form-group col-md-2">
-                <label for="total_price">Sub Total</label>
-                <input type="text" class="form-control" id="total_price" name="total_price[]" readonly>
-              </div>
-              <div class="form-group col-md-2">
-                <label for="total_price">#</label>
-                <button class="btn btn-danger delete-row form-control">Delete</button>
-              </div>
+        <div class="form-row mb-5">
+          <div class="col-md-3">
+            <select class="form-control select2" name="name" onchange="updateFields(this)">
+              <option value="">Select Item</option>
+              <?php foreach($barang as $data): ?>
+                <option value="<?= $data['id'] ?>" data-price="<?= $data['selling_price'] ?>" data-unit="<?= $data['unit'] ?>"><?= $data['name'] ?></option>
+              <?php endforeach ?>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <input type="text" class="form-control" name="price" placeholder="Price" readonly>
+          </div>
+          <div class="col-md-2">
+            <input type="number" class="form-control" name="quantity" placeholder="Quantity" oninput="updateSubtotal(this)">
+          </div>
+          <div class="col-md-2">
+            <input type="text" class="form-control" name="unit" placeholder="Unit" readonly>
+          </div>
+          <div class="col-md-2">
+            <input type="text" class="form-control" name="subtotal" placeholder="Subtotal" readonly>
+          </div>
+          <div class="col-md-1">
+            <button type="button" class="btn btn-primary" onclick="addToTable()">Add</button>
+          </div>
+        </div>
+          <form id="my-form">
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Nama Barang</th>
+                    <th>Harga</th>
+                    <th>Jumlah</th>
+                    <th>Satuan</th>
+                    <th>Sub Total</th>
+                    <th>Opsi</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody">
+
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="5" class="text-right"><strong>Total:</strong></td>
+                    <td><strong><div id="total" name="total" readonly></div></strong></td>
+                  </tr>
+                </tfoot>
+              </table>
             </div>
-            <div id="form-rows"></div>
-            
+            <input type="hidden" name="table_data" id="table_data">
             <hr>
-            <div class="form-group">
-              <label for="total">Total</label>
-              <input type="text" class="form-control" id="total" name="total" readonly>
-            </div>
             <div class="form-group">
               <label for="payment_type">Metode Pembayaran</label>
               <select class="form-control" id="payment_type" name="payment_type">
@@ -60,9 +73,8 @@
                 <?php endforeach ?>
               </select>
             </div>
-            <button type="button" class="btn btn-success add-row-btn">Tambah Form</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+            <button type="button" class="btn btn-primary" onclick="postData()">Pesan</button>
+          </form>
       </div>
     </div>
   </div>
@@ -70,120 +82,202 @@
 <?= $this->endSection() ?>
 <?= $this->section('script') ?>
 <script>
-$(document).ready(function() {
+  function convertKgToG(value, price) {
+    // Convert kg to g
+    var grams = value * 1000;
+
+    // Adjust the price
+    var adjustedPrice = price / grams;
+
+    return {
+      grams: grams,
+      adjustedPrice: adjustedPrice.toFixed(2)
+    };
+  }
+
+  // Example usage
+  var weightInKg = 0.1;
+  var pricePerKg = 10000;
+
+  var conversionResult = convertKgToG(weightInKg, pricePerKg);
+
+  console.log("Weight in grams: " + conversionResult.grams);
+  console.log("Adjusted price per gram: " + conversionResult.adjustedPrice);
+
+  var totalPrice = pricePerKg * weightInKg;
+  console.log("Total price: " + totalPrice + " rupiah");
+
+
+ function addToTable() {
+    // Get form field values
+    var nameSelect = document.querySelector('select[name="name"]');
+    var name = nameSelect.options[nameSelect.selectedIndex].text; // Get the selected option text
+    var id = nameSelect.value;
+    var price = document.querySelector('input[name="price"]').value;
+    var quantity = document.querySelector('input[name="quantity"]').value;
+    var unit = document.querySelector('input[name="unit"]').value;
+    var subtotal = document.querySelector('input[name="subtotal"]').value;
+
+    // Create a new table row
+    var newRow = document.createElement('tr');
+
+    var idCell = document.createElement('td');
+    idCell.style.display = 'none'; // Set the display style to 'none' to hide the cell
+    idCell.textContent = id;
+    newRow.appendChild(idCell);
+
+    // Create table cells and populate them with form field values
+    var nameCell = document.createElement('td');
+    nameCell.textContent = name;
+    newRow.appendChild(nameCell);
+
+    var priceCell = document.createElement('td');
+    priceCell.textContent = price;
+    newRow.appendChild(priceCell);
+
+    var quantityCell = document.createElement('td');
+    quantityCell.textContent = quantity;
+    newRow.appendChild(quantityCell);
+
+    var unitCell = document.createElement('td');
+    unitCell.textContent = unit;
+    newRow.appendChild(unitCell);
+
+    var subtotalCell = document.createElement('td');
+    subtotalCell.textContent = subtotal;
+    newRow.appendChild(subtotalCell);
+
+    // Create a delete button
+    var deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.classList.add('btn', 'btn-danger');
+    deleteButton.addEventListener('click', function() {
+      newRow.remove(); // Remove the row when delete button is clicked
+      updateTotal(); // Update the total after deletion
+    });
+
+    var deleteCell = document.createElement('td');
+    deleteCell.appendChild(deleteButton);
+    newRow.appendChild(deleteCell);
+
+    // Append the new row to the table body
+    var tableBody = document.getElementById('tableBody');
+    tableBody.appendChild(newRow);
+
+    // Clear the form field values
+    document.querySelector('select[name="name"]').selectedIndex = 0;
+    document.querySelector('input[name="price"]').value = '';
+    document.querySelector('input[name="quantity"]').value = '';
+    document.querySelector('input[name="unit"]').value = '';
+    document.querySelector('input[name="subtotal"]').value = '';
+
+    updateTotal(); // Update the total after adding the new row
+  }
+
+  function updateTotal() {
+    var tableRows = document.querySelectorAll('#tableBody tr');
+    var total = 0;
+
+    tableRows.forEach(function(row) {
+      var subtotalCell = row.querySelector('td:nth-child(6)');
+      var subtotal = parseFloat(subtotalCell.textContent);
+
+      if (!isNaN(subtotal)) {
+        total += subtotal;
+      }
+    });
+
+    var totalCell = document.getElementById('total');
+
+    // Display the formatted currency value
+    totalCell.textContent = total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+
+    // Store the raw number as a data attribute for the POST request
+    totalCell.dataset.value = total;
+  }
+
+  function updateFields(selectElement) {
+    var selectedOption = selectElement.options[selectElement.selectedIndex];
+    var priceInput = selectElement.parentNode.parentNode.querySelector('input[name="price"]');
+    var unitInput = selectElement.parentNode.parentNode.querySelector('input[name="unit"]');
+    var subtotalInput = selectElement.parentNode.parentNode.querySelector('input[name="subtotal"]');
+    
+    priceInput.value = selectedOption.getAttribute('data-price');
+    unitInput.value = selectedOption.getAttribute('data-unit');
+    subtotalInput.value = '';
+  }
+
+  function updateSubtotal(quantityInput) {
+    var formRow = quantityInput.parentNode.parentNode;
+    var price = parseFloat(formRow.querySelector('input[name="price"]').value);
+    var quantity = parseFloat(quantityInput.value);
+    var subtotal = formRow.querySelector('input[name="subtotal"]');
+    
+    if (!isNaN(price) && !isNaN(quantity)) {
+      subtotal.value = (price * quantity);
+    } else {
+      subtotal.value = '';
+    }
+  }
+
+  function postData() {
+    // Get the form data
+    var form = document.getElementById('my-form');
+    var formData = new FormData(form);
+
+    // Get the table rows
+    var tableRows = document.querySelectorAll('#tableBody tr');
+
+    // Iterate over each row and extract the data
+    var idItems = [];
+    var quantities = [];
+    var totalPrices = [];
+    tableRows.forEach(function(row) {
+      var cells = row.querySelectorAll('td');
+      idItems.push(cells[0].textContent); // Assuming the first cell contains the ID
+      quantities.push(cells[3].textContent); // Assuming the third cell contains the quantity
+      totalPrices.push(cells[5].textContent); // Assuming the fifth cell contains the subtotal
+    });
+
+    // Get the payment_type and user_id values
+    var paymentType = document.getElementById('payment_type').value;
+    var userId = document.getElementById('user_id').value;
+
+    // Add the payment_type, user_id, id_items, quantities, total_prices to the form data
+    formData.append('payment_type', paymentType);
+    formData.append('user_id', userId);
+    
+    idItems.forEach(function(idItem, index) {
+      formData.append('id_items[]', idItem);
+      formData.append('quantity[]', quantities[index]);
+      formData.append('total_price[]', totalPrices[index]);
+    });
+
+    // Send the POST request
+    fetch(`${base_url}dashboard/transaction`, {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert(data.message);
+        location.reload();
+      } else {
+        console.error(data.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+
+  $(document).ready(function() {
     $('.select2').select2({
       placeholder: 'Select an option',
       allowClear: true
     });
   });
 
-$(function() {
-  // Add row button click event handler
-  $('.add-row-btn').click(function() {
-    // Create a new form row
-    var $newRow = $('<div class="form-row">');
-    // Add the form row HTML to the new form row
-    $newRow.html(`
-      <div class="form-group col-md-2">
-        <label for="name">Nama Barang</label>
-        <select class="form-control" id="name" name="name[]" data-price="" data-unit="">
-          <?php if (empty($barang)): ?>
-            <option value="" disabled selected>Tidak ada barang!</option>
-          <?php else: ?>
-            <?php foreach ($barang as $data): ?>
-              <option value="<?= $data['id'] ?>"
-                      data-price="<?= $data['selling_price'] ?>"
-                      data-unit="<?= $data['unit'] ?>">
-                <?= $data['name'] ?>
-              </option>
-            <?php endforeach; ?>
-          <?php endif; ?>  
-
-        </select>
-      </div>
-      <div class="form-group col-md-2">
-        <label for="harga_barang">Harga Barang</label>
-        <input type="text" class="form-control" id="harga_barang" name="harga_barang" readonly>
-      </div>
-      <div class="form-group col-md-2">
-        <label for="quantity">Jumlah</label>
-        <input type="number" class="form-control" id="quantity" name="quantity[]">
-      </div>
-      <div class="form-group col-md-2">
-        <label for="satuan">Satuan</label>
-        <input type="text" class="form-control" id="satuan" name="satuan" readonly>
-      </div>
-      <div class="form-group col-md-2">
-        <label for="total_price">Sub Total</label>
-        <input type="text" class="form-control" id="total_price" name="total_price[]" readonly>
-      </div>
-      <div class="form-group col-md-2">
-        <label for="total_price">#</label>
-        <button class="btn btn-danger delete-row form-control">Delete</button>
-      </div>
-    `);
-    // Append the new form row to the form rows container
-    $('#form-rows').append($newRow);
-  });
-
-  $(document).on('change', 'select[name="name[]"]', function() {
-    var selectedOption = $(this).find('option:selected');
-    var price = selectedOption.data('price');
-    $(this).attr('data-price', price);
-    var quantity = $(this).closest('.form-row').find('input[name="quantity[]"]').val();
-    var subTotal = price * quantity;
-    $(this).closest('.form-row').find('input[name="harga_barang"]').val(price);
-    $(this).closest('.form-row').find('input[name="total_price[]"]').val(subTotal);
-  });
-
-  $(document).on('change', '#name', function() {
-    var selectedOption = $(this).find(':selected');
-    var unit = selectedOption.data('unit');
-    $(this).closest('.form-row').find('#satuan').val(unit);
-  });
-
-  // Update total_price field when quantity is changed
-  $(document).on('change', 'input[name="quantity[]"]', function() {
-    var quantity = $(this).val();
-    var price = $(this).closest('.form-row').find('select[name="name[]"]').data('price');
-    var subTotal = price * quantity;
-    $(this).closest('.form-row').find('input[name="total_price[]"]').val(subTotal);
-
-    // Update the total field
-    var total = 0;
-    $('input[name="total_price[]"]').each(function() {
-      var subtotal = parseFloat($(this).val());
-      if (!isNaN(subtotal)) {
-        total += subtotal;
-      }
-    });
-    $('#total').val(total);
-  });
-
-  $(document).on('click', '.delete-row', function() {
-    $(this).closest('.form-row').remove();
-  });
-
-  // Form submit event handler
-  $('#my-form').submit(function(event) {
-    // Prevent the form from submitting normally
-    event.preventDefault();
-    // Send the form data to the server using AJAX
-    $.ajax({
-      url: `${base_url}dashboard/transaction`,
-      method: 'POST',
-      data: $(this).serialize(),
-      success: function(response) {
-        // Handle the response from the server
-        alert('Success adding to cart')
-        location.reload();
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        // Handle errors
-        alert('Failed adding to cart')
-      }
-    });
-  });
-});
 </script>
 <?= $this->endSection() ?>

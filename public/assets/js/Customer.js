@@ -2,18 +2,17 @@ function edit(id) {
     save_method = 'update';
     $('#form')[0].reset(); 
     $.ajax({
-        url : `${base_url}dashboard/users/update/${id}`,
+        url : `${base_url}dashboard/customer/update/${id}`,
         type: 'GET',
         dataType: 'JSON',
         success: function(respond)
         {
             $('[name="id"]').val(respond.data.id);
             $('[name="name"]').val(respond.data.name);
-            $('[name="role"]').val(respond.data.role);
             $('[name="address"]').val(respond.data.address);
             $('[name="phone_number"]').val(respond.data.phone_number);
             $('#myModal').modal('show');
-            $('.modal-title').text('Edit Pengguna'); 
+            $('.modal-title').text('Edit User'); 
 
             $('#password-input').hide();
             $('#username-input').hide();
@@ -28,7 +27,7 @@ function edit(id) {
 
 function save() {
     const id = $('#id').val();
-    const url = id ? `${base_url}dashboard/users/update/${id}` : `${base_url}dashboard/users`;
+    const url = id ? `${base_url}dashboard/customer/update/${id}` : `${base_url}dashboard/customer`;
     
     $.ajax({
       url,
@@ -38,7 +37,7 @@ function save() {
       success: ({ success, message }) => {
         alert(message);
         if (success) {
-          window.location.href = `${base_url}dashboard/users`;
+          window.location.href = `${base_url}dashboard/customer`;
         }
       },
       error: () => {
@@ -51,7 +50,7 @@ function save() {
 function deleteData(id) {
     if (confirm('Anda yakin ingin melakukan operasi ini?')) {
         $.ajax({
-            url: `${base_url}dashboard/users/delete/${id}`,
+            url: `${base_url}dashboard/customer/delete/${id}`,
             type: 'GET',
             dataType: 'JSON',
             success: function (response) {

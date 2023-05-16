@@ -40,7 +40,7 @@ class User extends Migration
                 'constraint' => '14',
             ],
             'role' => [
-                'type' => 'ENUM("admin","customer")',
+                'type' => 'ENUM("admin","customer","kasir")',
                 'default' => 'customer',
                 'null' => false,
             ],

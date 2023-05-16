@@ -5,7 +5,7 @@ namespace App\Database\Migrations;
 use CodeIgniter\Database\RawSql;
 use CodeIgniter\Database\Migration;
 
-class Transaction extends Migration
+class Hutang extends Migration
 {
     public function up()
     {
@@ -16,28 +16,11 @@ class Transaction extends Migration
                 'unsigned' => true,
                 'auto_increment' => true,
             ],
-            'user_id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-            ],
-            'transaction_code' => [
+            'supplier' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255',
             ],
-            'id_item' => [
-                'type' => 'VARCHAR',
-                'constraint' => '255',
-            ],
-            'quantity' => [
-                'type' => 'VARCHAR',
-                'constraint' => '255',
-            ],
-            'payment_type' => [
-                'type' => 'ENUM("hutang", "tunai")',
-                'null' => false,
-                'default' => 'tunai',
-            ],
-            'total_price' => [
+            'hutang' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255',
             ],
@@ -46,9 +29,9 @@ class Transaction extends Migration
                 'constraint' => '255',
             ],
             'status' => [
-                'type' => 'ENUM("done","cicil")',
+                'type' => 'ENUM("cicil","lunas")',
                 'null' => false,
-                'default' => 'cicil',
+                'default' => 'cicil'
             ],
             'created_at' => [
                 'type' => 'DATE',
@@ -58,11 +41,11 @@ class Transaction extends Migration
             ]
         ]);
         $this->forge->addKey('id', TRUE);
-        $this->forge->createTable('transactions', TRUE);
+        $this->forge->createTable('hutang', TRUE);
     }
 
     public function down()
     {
-        $this->forge->dropTable('transactions');
+        $this->forge->dropTable('hutang');
     }
 }

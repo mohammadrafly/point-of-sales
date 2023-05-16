@@ -7,50 +7,51 @@ use App\Models\Users;
 
 class UserController extends BaseController
 {
+    //Customer
     public function index()
     {
         $model = new Users();
 
         if ($this->request->getMethod(true) !== 'POST') {
             $data = [
-                'content' => $model->findAll(),
+                'content' => $model->where('role', 'customer')->findAll(),
             ];
-            return view('pages/dashboard/user', $data);
+            return view('pages/dashboard/customer', $data);
         }
 
         $data = [
-            'username' => $this->request->getPost('username'),
-            'email' => $this->request->getPost('email'),
-            'address' => $this->request->getPost('address'),
-            'phone_number' => $this->request->getPost('phone_number'),
-            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'name' => $this->request->getPost('name'),
-            'role' => $this->request->getPost('role'),
+            'username' => $this->request->getVar('username'),
+            'email' => $this->request->getVar('email'),
+            'address' => $this->request->getVar('address'),
+            'phone_number' => $this->request->getVar('phone_number'),
+            'password' => password_hash($this->request->getVar('password'), PASSWORD_DEFAULT),
+            'name' => $this->request->getVar('name'),
+            'role' => 'customer',
         ];
 
         if ($model->like('username', $data['username'])->get()->getResultArray()) {
             return $this->response->setJSON([
                 'success' => FALSE,
-                'message' => 'Gagal simpan data pengguna, username telah digunakan.'
+                'message' => 'Gagal simpan data customer, username telah digunakan.'
             ]);
         }
 
         if ($model->like('email', $data['email'])->get()->getResultArray()) {
             return $this->response->setJSON([
                 'success' => FALSE,
-                'message' => 'Gagal simpan data pengguna, email telah digunakan.'
+                'message' => 'Gagal simpan data customer, email telah digunakan.'
             ]);
         }
 
         if ($model->insert($data)) {
             return $this->response->setJSON([
                 'success' => TRUE,
-                'message' => 'Berhasil simpan data pengguna'
+                'message' => 'Berhasil simpan data customer'
             ]);
         } else {
             return $this->response->setJSON([
                 'success' => FALSE,
-                'message' => 'Gagal simpan data pengguna'
+                'message' => 'Gagal simpan data customer'
             ]);
         }
     }
@@ -67,38 +68,21 @@ class UserController extends BaseController
         }
 
         $data = [
-            'address' => $this->request->getPost('address'),
-            'phone_number' => $this->request->getPost('phone_number'),
-            //'username' => $this->request->getPost('username'),
-            //'email' => $this->request->getPost('email'),
-            'name' => $this->request->getPost('name'),
-            'role' => $this->request->getPost('role'),
+            'address' => $this->request->getVar('address'),
+            'phone_number' => $this->request->getVar('phone_number'),
+            'name' => $this->request->getVar('name'),
             'updated_at' => date('Y-m-d H:i:s'),
         ];
-        
-        //if ($model->like('username', $data['username'])->get()->getResultArray()) {
-        //    return $this->response->setJSON([
-        //        'success' => FALSE,
-        //        'message' => 'Gagal simpan data pengguna, username telah digunakan.'
-        //    ]);
-        //}
-
-        //if ($model->like('email', $data['email'])->get()->getResultArray()) {
-        //    return $this->response->setJSON([
-        //        'success' => FALSE,
-        //        'message' => 'Gagal simpan data pengguna, email telah digunakan.'
-        //    ]);
-        //}
 
         if ($model->update($id, $data)) {
             return $this->response->setJSON([
                 'success' => TRUE,
-                'message' => 'Berhasil simpan data pengguna'
+                'message' => 'Berhasil simpan data customer'
             ]);
         } else {
             return $this->response->setJSON([
                 'success' => FALSE,
-                'message' => 'Gagal simpan data pengguna'
+                'message' => 'Gagal simpan data customer'
             ]);
         }
     }
@@ -109,12 +93,204 @@ class UserController extends BaseController
         if ($model->where('id', $id)->delete($id)) {
             return $this->response->setJSON([
                 'success' => TRUE,
-                'message' => 'Berhasil hapus data pengguna'
+                'message' => 'Berhasil hapus data customer'
             ]);
         } else {
             return $this->response->setJSON([
                 'success' => FALSE,
-                'message' => 'Gagal hapus data pengguna'
+                'message' => 'Gagal hapus data customer'
+            ]);
+        }
+    }
+
+    //Kasir
+    public function indexKasir()
+    {
+        $model = new Users();
+
+        if ($this->request->getMethod(true) !== 'POST') {
+            $data = [
+                'content' => $model->where('role', 'kasir')->findAll(),
+            ];
+            return view('pages/dashboard/kasir', $data);
+        }
+
+        $data = [
+            'username' => $this->request->getVar('username'),
+            'email' => $this->request->getVar('email'),
+            'address' => $this->request->getVar('address'),
+            'phone_number' => $this->request->getVar('phone_number'),
+            'password' => password_hash($this->request->getVar('password'), PASSWORD_DEFAULT),
+            'name' => $this->request->getVar('name'),
+            'role' => 'kasir',
+        ];
+
+        if ($model->like('username', $data['username'])->get()->getResultArray()) {
+            return $this->response->setJSON([
+                'success' => FALSE,
+                'message' => 'Gagal simpan data kasir, username telah digunakan.'
+            ]);
+        }
+
+        if ($model->like('email', $data['email'])->get()->getResultArray()) {
+            return $this->response->setJSON([
+                'success' => FALSE,
+                'message' => 'Gagal simpan data kasir, email telah digunakan.'
+            ]);
+        }
+
+        if ($model->insert($data)) {
+            return $this->response->setJSON([
+                'success' => TRUE,
+                'message' => 'Berhasil simpan data kasir'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => FALSE,
+                'message' => 'Gagal simpan data kasir'
+            ]);
+        }
+    }
+
+    public function updateKasir($id = null)
+    {
+        $model = new Users();
+
+        if ($this->request->getMethod(true) !== 'POST') {
+            return $this->response->setJSON([
+                'success' => TRUE,
+                'data' => $model->where('id', $id)->first()
+            ]);
+        }
+
+        $data = [
+            'address' => $this->request->getVar('address'),
+            'phone_number' => $this->request->getVar('phone_number'),
+            'name' => $this->request->getVar('name'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ];
+
+        if ($model->update($id, $data)) {
+            return $this->response->setJSON([
+                'success' => TRUE,
+                'message' => 'Berhasil simpan data kasir'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => FALSE,
+                'message' => 'Gagal simpan data kasir'
+            ]);
+        }
+    }
+
+    public function deleteKasir($id = null) 
+    {
+        $model = new Users();
+        if ($model->where('id', $id)->delete($id)) {
+            return $this->response->setJSON([
+                'success' => TRUE,
+                'message' => 'Berhasil hapus data kasir'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => FALSE,
+                'message' => 'Gagal hapus data kasir'
+            ]);
+        }
+    }
+
+    //Admin
+    public function indexAdmin()
+    {
+        $model = new Users();
+
+        if ($this->request->getMethod(true) !== 'POST') {
+            $data = [
+                'content' => $model->where('role', 'admin')->findAll(),
+            ];
+            return view('pages/dashboard/admin', $data);
+        }
+
+        $data = [
+            'username' => $this->request->getVar('username'),
+            'email' => $this->request->getVar('email'),
+            'address' => $this->request->getVar('address'),
+            'phone_number' => $this->request->getVar('phone_number'),
+            'password' => password_hash($this->request->getVar('password'), PASSWORD_DEFAULT),
+            'name' => $this->request->getVar('name'),
+            'role' => 'admin',
+        ];
+
+        if ($model->like('username', $data['username'])->get()->getResultArray()) {
+            return $this->response->setJSON([
+                'success' => FALSE,
+                'message' => 'Gagal simpan data admin, username telah digunakan.'
+            ]);
+        }
+
+        if ($model->like('email', $data['email'])->get()->getResultArray()) {
+            return $this->response->setJSON([
+                'success' => FALSE,
+                'message' => 'Gagal simpan data admin, email telah digunakan.'
+            ]);
+        }
+
+        if ($model->insert($data)) {
+            return $this->response->setJSON([
+                'success' => TRUE,
+                'message' => 'Berhasil simpan data admin'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => FALSE,
+                'message' => 'Gagal simpan data admin'
+            ]);
+        }
+    }
+
+    public function updateAdmin($id = null)
+    {
+        $model = new Users();
+
+        if ($this->request->getMethod(true) !== 'POST') {
+            return $this->response->setJSON([
+                'success' => TRUE,
+                'data' => $model->where('id', $id)->first()
+            ]);
+        }
+
+        $data = [
+            'address' => $this->request->getVar('address'),
+            'phone_number' => $this->request->getVar('phone_number'),
+            'name' => $this->request->getVar('name'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ];
+
+        if ($model->update($id, $data)) {
+            return $this->response->setJSON([
+                'success' => TRUE,
+                'message' => 'Berhasil simpan data admin'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => FALSE,
+                'message' => 'Gagal simpan data admin'
+            ]);
+        }
+    }
+
+    public function deleteAdmin($id = null) 
+    {
+        $model = new Users();
+        if ($model->where('id', $id)->delete($id)) {
+            return $this->response->setJSON([
+                'success' => TRUE,
+                'message' => 'Berhasil hapus data admin'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => FALSE,
+                'message' => 'Gagal hapus data admin'
             ]);
         }
     }

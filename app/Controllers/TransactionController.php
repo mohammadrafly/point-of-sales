@@ -27,17 +27,20 @@ class TransactionController extends BaseController
        
         $transactions = []; // Array to store all the transaction data
 
-        $id_items = $this->request->getPost('name[]'); // Get all id_item values
+        $id_items = $this->request->getPost('id_items[]'); // Get all id_item values
         $quantities = $this->request->getPost('quantity[]'); // Get all quantity values
         $total_prices = $this->request->getPost('total_price[]'); // Get all total_price values
         $user_id = $this->request->getPost('user_id');
         $payment_method = $this->request->getPost('payment_type');
         if ($payment_method == 'hutang') {
-            $status = 'no_payment';
+            $status = 'cicil';
         } else {
             $status = 'done';
         }
         $transactionCode = 'TRX-' . bin2hex(random_bytes(16));
+        $currentDate = date('Y-m-d');
+        $nextDay = date('Y-m-d', strtotime($currentDate . ' +1 day'));
+
         // Loop through all the values and create an array for each transaction
         for ($i = 0; $i < count($id_items); $i++) {
             $transaction = [
@@ -48,6 +51,10 @@ class TransactionController extends BaseController
                 'total_price' => $total_prices[$i],
                 'status' => $status,
                 'user_id' => $user_id,
+                'cicil' => '0',
+                'created_at' => $nextDay,
+                'updated_at' => $nextDay
+
             ];
             $transactions[] = $transaction; // Add the transaction to the array
         }
@@ -82,7 +89,7 @@ class TransactionController extends BaseController
             'quantity' => $this->request->getVar('quantity'),
             'payment_type' => $this->request->getVar('payment_type'),
             'status' => $this->request->getVar('status'),
-            'updated_at' => date('H:i:s Y-m-d'),
+            'updated_at' => date('Y-m-d'),
         ];
         
         if ($model->update($id, $data)) {

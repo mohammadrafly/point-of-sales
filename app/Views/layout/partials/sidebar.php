@@ -28,32 +28,69 @@
             <li class="nav-item">
                 <a class="nav-link" href="<?= base_url('dashboard/transaction') ?>">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Transaksi</span></a>
+                    <span>Transaksi Penjualan</span></a>
             </li>
 
             <hr class="sidebar-divider">
             <div class="sidebar-heading">
-                Data
+                Data Transaksi
             </div>
             <!-- Nav Item - Tables -->
             <li class="nav-item">
-                <a class="nav-link" href="<?= base_url('dashboard/transaksi') ?>">
+                <a class="nav-link" href="<?= base_url('dashboard/transaksi/type/tunai') ?>">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>Data Transaksi</span></a>
+                    <span>Data Transaksi Tunai</span></a>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="<?= base_url('dashboard/transaksi/type/hutang') ?>">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Data Transaksi Piutang</span></a>
+            </li>
+
+            <?php if(session()->get('role') === 'admin'): ?>
+            <li class="nav-item">
+                <a class="nav-link" href="<?= base_url('dashboard/hutang/supplier') ?>">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Data Transaksi Hutang</span></a>
+            </li>
+            <?php endif ?>
+
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">
+                Master
+            </div>
             <li class="nav-item">
                 <a class="nav-link" href="<?= base_url('dashboard/items') ?>">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>Data Barang</span></a>
+                    <span>Barang</span></a>
+            </li>
+
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">
+                Data Pengguna
+            </div>
+            <li class="nav-item">
+                <a class="nav-link" href="<?= base_url('dashboard/customer') ?>">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Customer</span></a>
+            </li>
+
+            <?php if(session()->get('role') === 'admin'): ?>
+            <li class="nav-item">
+                <a class="nav-link" href="<?= base_url('dashboard/kasir') ?>">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Kasir</span></a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="<?= base_url('dashboard/users') ?>">
+                <a class="nav-link" href="<?= base_url('dashboard/admin') ?>">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>Data Pengguna</span></a>
+                    <span>Admin</span></a>
             </li>
+            <?php endif ?>
 
+            <?php if(session()->get('role') === 'admin'): ?>
             <hr class="sidebar-divider">
             <div class="sidebar-heading">
                 Pengaturan
@@ -64,6 +101,7 @@
                     <i class="fas fa-fw fa-table"></i>
                     <span>Profil Toko</span></a>
             </li>
+            <?php endif ?>
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">

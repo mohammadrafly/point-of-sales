@@ -17,6 +17,49 @@
     <link href="<?= base_url('assets/css/sb-admin-2.min.css') ?>" rel="stylesheet">
     <link href="<?= base_url('assets/vendors/datatables/dataTables.bootstrap4.min.css') ?>" rel="stylesheet">
     <?= $this->renderSection('head') ?>
+    <style>
+        .transaction-info {
+    font-family: "Arial", sans-serif;
+}
+
+.info-row {
+    margin-bottom: 10px;
+}
+
+.info-label {
+    font-weight: bold;
+    color: #555;
+}
+
+.info-value {
+    color: #333;
+}
+
+/* Example Styles for Awesome Look */
+.transaction-info {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-label {
+    font-weight: bold;
+    color: #428bca;
+}
+
+.info-value {
+    font-size: 18px;
+    color: #333;
+}
+
+
+    </style>
 </head>
 <body id="page-top">
     <div id="wrapper">
