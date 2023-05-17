@@ -52,18 +52,22 @@ class Transactions extends Model
 
     function getDetails($transactionCode)
     {
-        return $this->db->table('transactions')
-            ->select('
-                transactions.*,
-                users.name as nama_user,
-                items.name,
-                items.selling_price,
-                items.unit
-            ')
-            ->join('items', 'transactions.id_item = items.id')
-            ->join('users', 'transactions.user_id = users.id')
-            ->where('transaction_code', $transactionCode)
-            ->get()->getResultArray();
+        try {
+            return $this->db->table('transactions')
+                ->select('
+                    transactions.*,
+                    users.name as nama_user,
+                    items.name,
+                    items.selling_price,
+                    items.unit
+                ')
+                ->join('items', 'transactions.id_item = items.id')
+                ->join('users', 'transactions.user_id = users.id')
+                ->where('transaction_code', $transactionCode)
+                ->get()->getResultArray();
+        } catch (\Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
     }
 
     function joinTransactionsWithUsersByPaymentType($type)

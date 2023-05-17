@@ -37,11 +37,9 @@ class TransaksiController extends BaseController
     {
         $model = new Transactions();
     
-        // Get the total by transaction code
         $total = $model->getTotalByTransactionCode($transactionCode);
     
         if ($total === null) {
-            // Transaction code not found
             return $this->response->setJSON([
                 'success' => false,
                 'message' => 'Transaction code not found',

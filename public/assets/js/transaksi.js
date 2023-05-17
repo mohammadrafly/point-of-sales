@@ -30,6 +30,7 @@ function showDetails(transactionCode) {
             );
           }
   
+          console.log()
           if (response.data[0].payment_type === 'hutang') {
             $('#cicil_hutang_label').text('Total cicil: ' + formatRupiah(response.data[0].cicil));
           } else {

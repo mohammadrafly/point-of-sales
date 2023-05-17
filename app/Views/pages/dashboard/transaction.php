@@ -12,7 +12,7 @@
             <select class="form-control select2" name="name" onchange="updateFields(this)">
               <option value="">Select Item</option>
               <?php foreach($barang as $data): ?>
-                <option value="<?= $data['id'] ?>" data-price="<?= $data['selling_price'] ?>" data-unit="<?= $data['unit'] ?>"><?= $data['name'] ?></option>
+                <option value="<?= $data['id'] ?>" data-price="<?= $data['selling_price'] ?>" data-unit="<?= $data['unit'] ?>"><?= $data['name'] ?> - <?= $data['unit'] ?></option>
               <?php endforeach ?>
             </select>
           </div>
@@ -132,7 +132,7 @@
     newRow.appendChild(nameCell);
 
     var priceCell = document.createElement('td');
-    priceCell.textContent = price;
+    priceCell.textContent = price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });;
     newRow.appendChild(priceCell);
 
     var quantityCell = document.createElement('td');
@@ -144,7 +144,7 @@
     newRow.appendChild(unitCell);
 
     var subtotalCell = document.createElement('td');
-    subtotalCell.textContent = subtotal;
+    subtotalCell.textContent = subtotal.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });;
     newRow.appendChild(subtotalCell);
 
     // Create a delete button

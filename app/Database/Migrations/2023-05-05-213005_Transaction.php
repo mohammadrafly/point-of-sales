@@ -2,7 +2,6 @@
 
 namespace App\Database\Migrations;
 
-use CodeIgniter\Database\RawSql;
 use CodeIgniter\Database\Migration;
 
 class Transaction extends Migration
@@ -58,6 +57,7 @@ class Transaction extends Migration
             ]
         ]);
         $this->forge->addKey('id', TRUE);
+        $this->forge->addKey('transaction_code');
         $this->forge->createTable('transactions', TRUE);
     }
 

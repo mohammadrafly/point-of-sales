@@ -45,7 +45,13 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="inputName">Satuan</label>
-                                            <input type="text" class="form-control" id="unit" name="unit" placeholder="masukkan satuan">
+                                            <select class="form-control" id="unit" name="unit">
+                                                <option value="KG">KILOGRAM</option>
+                                                <option value="PCS">PCS</option>
+                                                <option value="RENCENG">RENCENG</option>
+                                                <option value="PAK">PAK</option>
+                                                <option value="ONS">ONS</option>
+                                            </select>
                                         </div>
                                     </form>
                                 </div>

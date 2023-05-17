@@ -20,7 +20,7 @@ class ItemSeeder extends Seeder
                 'selling_price' => '11000',
                 'purchase_price'=> '9000',
                 'stock'         => 10,
-                'unit'          => 'kg',
+                'unit'          => 'KG',
             ],
             [
                 'kode_barang'   => $prefix,
@@ -29,7 +29,7 @@ class ItemSeeder extends Seeder
                 'selling_price' => '15000',
                 'purchase_price'=> '11000',
                 'stock'         => 20,
-                'unit'          => 'kg',
+                'unit'          => 'KG',
             ],
         ];
         $this->db->table('items')->insertBatch($data);
