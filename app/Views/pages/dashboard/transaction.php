@@ -61,7 +61,7 @@
             <div class="form-group">
               <label for="payment_type">Metode Pembayaran</label>
               <select class="form-control" id="payment_type" name="payment_type">
-                  <option value="hutang">Hutang</option>
+                  <option value="hutang">Piutang</option>
                   <option value="tunai">Tunai</option>
               </select>
             </div>
