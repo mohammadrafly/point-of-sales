@@ -19,7 +19,12 @@ class ItemController extends BaseController
             return view('pages/dashboard/item', $data);
         }
 
+        $randomNumber = mt_rand(100000000, 999999999) . uniqid();
+        $randomNumber = substr($randomNumber, 0, 10);
+        $prefix = 'KB'.$randomNumber;
+
         $data = [
+            'kode_barang' => $prefix,
             'name' => $this->request->getPost('name'),
             'description' => $this->request->getPost('description'),
             'selling_price' => $this->request->getPost('selling_price'),

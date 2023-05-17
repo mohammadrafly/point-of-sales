@@ -16,6 +16,10 @@ class Item extends Migration
                 'unsigned' => true,
                 'auto_increment' => true,
             ],
+            'kode_barang' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255',
+            ],
             'name' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255',

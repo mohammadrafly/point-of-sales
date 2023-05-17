@@ -8,8 +8,13 @@ class ItemSeeder extends Seeder
 {
     public function run()
     {
+        $randomNumber = mt_rand(100000000, 999999999) . uniqid();
+        $randomNumber = substr($randomNumber, 0, 10);
+        $prefix = 'KB'.$randomNumber;
+
         $data = [
             [
+                'kode_barang'   => $prefix,
                 'name'          => 'Gula',
                 'description'   => 'karbohidrat sederhana yang menjadi sumber energi dan komoditi perdagangan utama.',
                 'selling_price' => '11000',
@@ -18,6 +23,7 @@ class ItemSeeder extends Seeder
                 'unit'          => 'kg',
             ],
             [
+                'kode_barang'   => $prefix,
                 'name'          => 'Beras',
                 'description'   => 'biji-bijian baik berkulit, tidak berkulit, diolah atau tidak diolah yang berasal dari Oriza Sativa.',
                 'selling_price' => '15000',

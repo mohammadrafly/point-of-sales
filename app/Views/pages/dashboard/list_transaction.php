@@ -8,6 +8,9 @@
                                 <button class="btn btn-success" data-toggle="modal" data-target="#dateRangeModal">Export to Excel</button>
                             </div>
                         </div>
+                        <a href="<?= base_url('dashboard/transaction') ?>" class="btn btn-primary">
+                            Tambah <?= $tunai ? 'Transaksi Tunai' : 'Transaksi Piutang'?>
+                        </a>
                         <!-- Date Range Modal -->
                         <div class="modal fade" id="dateRangeModal" tabindex="-1" role="dialog" aria-labelledby="dateRangeModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">

@@ -73,7 +73,7 @@
                 <?php endforeach ?>
               </select>
             </div>
-            <button type="button" class="btn btn-primary" onclick="postData()">Pesan</button>
+            <button type="button" class="btn btn-primary" onclick="postData()">Simpan</button>
           </form>
       </div>
     </div>

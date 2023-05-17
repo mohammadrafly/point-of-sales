@@ -111,7 +111,6 @@ class HutangController extends BaseController
         $status = $this->request->getVar('status');
 
         $data = $model->RangeDate($startDate, $endDate, $status);
-        dd($data);
         //dd($data);
         $spreadsheet = new Spreadsheet();
 

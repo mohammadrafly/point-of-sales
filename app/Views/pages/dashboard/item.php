@@ -61,6 +61,7 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
+                                            <th>Kode Barang</th>
                                             <th>Nama Barang</th>
                                             <th>Deskripsi</th>
                                             <th>Harga Jual</th>
@@ -74,6 +75,7 @@
                                     <tbody>
                                     <?php foreach ($content as $data): ?>
                                         <tr>
+                                            <td><?= $data['kode_barang'] ?></td>
                                             <td><?= $data['name'] ?></td>
                                             <td><?= $data['description'] ?></td>
                                             <?php if($data['selling_price'] == NULL): ?>
