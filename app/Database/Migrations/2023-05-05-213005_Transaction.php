@@ -16,8 +16,9 @@ class Transaction extends Migration
                 'auto_increment' => true,
             ],
             'user_id' => [
-                'type' => 'INT',
+                'type' => 'VARCHAR',
                 'constraint' => 11,
+                'null' => TRUE
             ],
             'transaction_code' => [
                 'type' => 'VARCHAR',

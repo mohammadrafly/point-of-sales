@@ -65,10 +65,13 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div style="font-weight: bold;">Waktu Transaksi: <span id="waktu" style="font-weight: normal;"></span></div>
+                                                <?php if(!$tunai): ?>
                                                 <div style="font-weight: bold;">Customer: <span id="customer" style="font-weight: normal;"></span></div>
+                                                <?php endif ?>
                                                 <div style="font-weight: bold;">Kode Transaksi: <span id="kode_transaksi" style="font-weight: normal;"></span></div>
                                                 <div style="font-weight: bold;">Status Transaksi: <span id="status" style="font-weight: normal;"></span></div>
                                                 <div style="font-weight: bold;" id="cicil_hutang_label"></div>
+                                                <div style="font-weight: bold;" id="kembalian_label"></div>
                                             </div>
                                         </div>
                                         <br>
@@ -109,7 +112,9 @@
                                     <thead>
                                         <tr>
                                             <th>Kode Transaksi</th>
+                                            <?php if(!$tunai): ?>
                                             <th>Customer</th>
+                                            <?php endif ?>
                                             <th>Total</th>
                                             <th>Status</th>
                                             <th>Waktu Transaksi</th>
@@ -129,7 +134,6 @@
                                             if (!isset($merged_data[$transaction_code])) {
                                                 $merged_data[$transaction_code] = [
                                                     'transaction_code' => $transaction_code,
-                                                    'nama_user' => $data['nama_user'],
                                                     'total_price' => $data['total_price'],
                                                     'status' => $data['status'],
                                                     'payment_type' => $data['payment_type'],
@@ -138,19 +142,24 @@
                                                     'id_items' => [$data['id_item']],
                                                     'quantities' => [$data['quantity']]
                                                 ];
+                                                if ($data['payment_type'] != 'tunai') {
+                                                    $merged_data[$transaction_code]['nama_user'] = $data['nama_user'];
+                                                }
                                             } else {
                                                 $merged_data[$transaction_code]['id_items'][] = $data['id_item'];
                                                 $merged_data[$transaction_code]['quantities'][] = $data['quantity'];
                                                 $merged_data[$transaction_code]['total_price'] += $data['total_price'];
                                             }
                                         }
-
+                                        
                                         // Output the merged data in the table
                                         foreach ($merged_data as $data):
                                         ?>
                                             <tr>
                                                 <td><?= $data['transaction_code'] ?></td>
-                                                <td><?= $data['nama_user'] ?></td>
+                                                <?php if ($data['payment_type'] != 'tunai'): ?>
+                                                    <td><?= $data['nama_user'] ?></td>
+                                                <?php endif; ?>
                                                 <td><?= number_to_currency($data['total_price'], 'IDR') ?></td>
                                                 <td>
                                                     <?php if($data['status'] == 'cicil'): ?>
@@ -183,7 +192,8 @@
     function printModal() {
         var transactionCode = document.getElementById("kode_transaksi").textContent.trim();
         var waktu = document.getElementById("waktu").textContent.trim();
-        var customer = document.getElementById("customer").textContent.trim();
+        var customerElement = document.getElementById("customer");
+        var customer = customerElement ? customerElement.textContent.trim() : 'Customer Tunai';
         var status = document.getElementById("status").textContent.trim();
         var tableRows = document.getElementById("form").querySelectorAll("table tbody tr");
         var total = document.getElementById("total").textContent.trim();

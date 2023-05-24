@@ -15,7 +15,7 @@ class TransaksiController extends BaseController
         $model = new Transactions();
         $data = [
             'tunai' => true,
-            'content' => $model->joinTransactionsWithUsersByPaymentType('tunai'),
+            'content' => $model->where('payment_type', 'tunai')->findAll(),
         ];
 
         return view('pages/dashboard/list_transaction', $data);
@@ -36,34 +36,27 @@ class TransaksiController extends BaseController
     public function bayarHutang($transactionCode)
     {
         $model = new Transactions();
-    
+
         $total = $model->getTotalByTransactionCode($transactionCode);
-    
+
         if ($total === null) {
             return $this->response->setJSON([
                 'success' => false,
                 'message' => 'Transaction code not found',
             ]);
         }
-    
+
         $cicilAmount = $this->request->getVar('cicil');
-    
-        if ($cicilAmount > $total) {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'The cicil amount cannot be greater than the total price',
-            ]);
-        }
-    
+
         // Retrieve the existing value of 'cicil' from the database
         $existingCicil = $model->select('cicil')->where('transaction_code', $transactionCode)->first();
         $existingCicilAmount = $existingCicil['cicil'] ?? 0;
-    
+
         // Calculate the new value of 'cicil' by adding the new amount to the existing amount
         $newCicilAmount = $existingCicilAmount + $cicilAmount;
-    
+
         $remainingBalance = $total - $newCicilAmount;
-    
+
         if ($remainingBalance <= 0) {
             // The remaining balance is met, mark the status as 'done'
             $status = 'done';
@@ -78,21 +71,21 @@ class TransaksiController extends BaseController
             'updated_at' => $nextDay,
         ];
         $model->where('transaction_code', $transactionCode)->set($data)->update();
-    
+
         $updatedCount = $model->affectedRows();
-    
+
         if ($updatedCount === 0) {
             return $this->response->setJSON([
                 'success' => false,
                 'message' => 'Failed to update the data',
             ]);
         }
-    
+
         return $this->response->setJSON([
             'success' => true,
             'message' => 'Berhasil melakukan pembayaran',
         ]);
-    }    
+    }
 
     public function details($transactionCode)
     {

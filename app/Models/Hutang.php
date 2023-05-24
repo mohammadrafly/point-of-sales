@@ -14,6 +14,7 @@ class Hutang extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
+        'kode_hutang',
         'supplier',
         'hutang',
         'cicil',

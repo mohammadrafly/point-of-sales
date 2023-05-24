@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\Hutang;
+use App\Models\Items;
+use App\Models\Users;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -13,27 +15,71 @@ class HutangController extends BaseController
     {
         helper('number');
         $model = new Hutang();
+        $modelUser = new Users();
+        $modelItem = new Items();
+
         if ($this->request->getMethod(true) !== 'POST') {
             $data = [
                 'content' => $model->findAll(),
+                'user' => $modelUser->where('role', 'supplier')->findAll(),
             ];
             return view('pages/dashboard/hutang', $data);
         }
 
         $currentDate = date('Y-m-d');
         $nextDay = date('Y-m-d', strtotime($currentDate . ' +1 day'));
+        $names = $this->request->getVar('name[]');
+        $purchasePrices = $this->request->getVar('purchase_price[]');
+        $units = $this->request->getVar('unit[]');
+        $quantities = $this->request->getVar('quantity[]');
+        $hutangCode = 'HTG-' . bin2hex(random_bytes(16));
+
+        $regularNumbers = array_map(function($price) {
+            $number = str_replace(["Rp ", ".", ","], "", $price);
+            return (float) $number;
+        }, $purchasePrices);
+
+        $total = array_sum($regularNumbers);
+
         $data = [
+            'kode_hutang' => $hutangCode,
             'supplier' => $this->request->getVar('supplier'),
-            'hutang' => $this->request->getVar('hutang'),
+            'hutang' => $total,
             'cicil' => '0',
             'status' => 'cicil',
             'created_at' => $nextDay,
             'updated_at' => $nextDay
         ];
 
+        $datas = [];
+        foreach ($names as $index => $name) {
+            $randomNumber = mt_rand(100000000, 999999999) . uniqid();
+            $randomNumber = substr($randomNumber, 0, 10);
+            $prefix = 'KB'.$randomNumber;
+            $data2 = [
+                'kode_barang' => $prefix,
+                'name' => $name,
+                'description' => null,
+                'selling_price' => null,
+                'purchase_price' => $regularNumbers[$index],
+                'stock' => $quantities[$index],
+                'unit' => $units[$index],
+                'created_at' => $nextDay,
+                'updated_at' => $nextDay
+            ];
+            $datas[] = $data2;
+        }
+
         if (!$model->insert($data)) {
             return $this->response->setJSON([
-                'status' => true,
+                'status' => false,
+                'message' => 'gagal menambahkan hutang'
+            ]);
+        }
+
+        if (!$modelItem->insertBatch($datas)) {
+            return $this->response->setJSON([
+                'status' => false,
                 'message' => 'gagal menambahkan hutang'
             ]);
         }
@@ -46,6 +92,7 @@ class HutangController extends BaseController
 
     public function bayar($id)
     {
+        helper('number');
         $model = new Hutang();
         if ($this->request->getMethod(true) !== 'POST') {
             return $this->response->setJSON($model->find($id));
@@ -53,17 +100,15 @@ class HutangController extends BaseController
 
         $cicilAmount = $this->request->getVar('cicil');
         $hutangData = $model->find($id);
-        $remainingHutang = $hutangData['hutang'] - $hutangData['cicil'];
-
-        if ($cicilAmount > $remainingHutang) {
-            return $this->response->setJSON([
-                'status' => false,
-                'message' => 'Jumlah cicilan melebihi sisa hutang.'
-            ]);
-        }
 
         $newCicilAmount = $hutangData['cicil'] + $cicilAmount;
-        $status = ($newCicilAmount < $remainingHutang) ? 'cicil' : 'lunas';
+        $status = ($newCicilAmount < $hutangData['hutang']) ? 'cicil' : 'lunas';
+
+        $kembalian = 0;
+
+        if ($cicilAmount > $hutangData['hutang']) {
+            $kembalian = $cicilAmount - $hutangData['hutang'];
+        }
 
         $data = [
             'cicil' => $newCicilAmount,
@@ -80,7 +125,7 @@ class HutangController extends BaseController
 
         return $this->response->setJSON([
             'status' => true,
-            'message' => 'Berhasil melakukan cicilan hutang.'
+            'message' => 'Berhasil melakukan cicilan hutang dengan kembalian: '. number_to_currency($kembalian, 'IDR'),
         ]);
     }
 

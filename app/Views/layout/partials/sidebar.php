@@ -70,11 +70,6 @@
             <div class="sidebar-heading">
                 Data Pengguna
             </div>
-            <li class="nav-item">
-                <a class="nav-link" href="<?= base_url('dashboard/customer') ?>">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Customer</span></a>
-            </li>
 
             <?php if(session()->get('role') === 'admin'): ?>
             <li class="nav-item">

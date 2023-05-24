@@ -27,10 +27,12 @@ class Item extends Migration
             'description' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255',
+                'null' => TRUE
             ],
             'selling_price' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255',
+                'null' => TRUE
             ],
             'purchase_price' => [
                 'type' => 'VARCHAR',

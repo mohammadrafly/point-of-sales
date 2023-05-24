@@ -19,6 +19,7 @@ class User extends Migration
             'username' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255',
+                'null' => TRUE,
             ],
             'email' => [
                 'type' => 'VARCHAR',
@@ -27,6 +28,7 @@ class User extends Migration
             'password' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255',
+                'null' => TRUE,
             ],
             'name' => [
                 'type' => 'VARCHAR',

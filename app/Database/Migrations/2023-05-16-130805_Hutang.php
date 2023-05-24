@@ -2,7 +2,6 @@
 
 namespace App\Database\Migrations;
 
-use CodeIgniter\Database\RawSql;
 use CodeIgniter\Database\Migration;
 
 class Hutang extends Migration
@@ -15,6 +14,10 @@ class Hutang extends Migration
                 'constraint' => 11,
                 'unsigned' => true,
                 'auto_increment' => true,
+            ],
+            'kode_hutang' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255',
             ],
             'supplier' => [
                 'type' => 'VARCHAR',

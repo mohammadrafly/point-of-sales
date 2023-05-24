@@ -53,7 +53,7 @@ class Transactions extends Model
     function getDetails($transactionCode)
     {
         try {
-            return $this->db->table('transactions')
+            $query = $this->db->table('transactions')
                 ->select('
                     transactions.*,
                     users.name as nama_user,
@@ -62,13 +62,23 @@ class Transactions extends Model
                     items.unit
                 ')
                 ->join('items', 'transactions.id_item = items.id')
-                ->join('users', 'transactions.user_id = users.id')
-                ->where('transaction_code', $transactionCode)
-                ->get()->getResultArray();
+                ->join('users', 'transactions.user_id = users.id', 'left')
+                ->where('transaction_code', $transactionCode);
+    
+            $result = $query->get()->getResultArray();
+    
+            if ($result && $result[0]['user_id'] === null) {
+                foreach ($result as &$row) {
+                    unset($row['nama_user']);
+                }
+            }
+    
+            return $result;
         } catch (\Exception $e) {
             echo "Error: " . $e->getMessage();
         }
     }
+    
 
     function joinTransactionsWithUsersByPaymentType($type)
     {

@@ -1,5 +1,6 @@
 <?= $this->extend('layout/templateDashboard') ?>
 <?= $this->section('content') ?>  
+<?= $this->include('pages/dashboard/partials/addUser') ?>
 <div class="row">
   <div class="col-lg-12">
     <div class="card">
@@ -60,17 +61,18 @@
             <hr>
             <div class="form-group">
               <label for="payment_type">Metode Pembayaran</label>
-              <select class="form-control" id="payment_type" name="payment_type">
+              <select class="form-control" id="payment_type" name="payment_type" onchange="handlePaymentTypeChange()">
                   <option value="hutang">Piutang</option>
                   <option value="tunai">Tunai</option>
               </select>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="customer_field">
               <label for="payment_type">Customer</label>
               <select class="select2 form-control" id="user_id" name="user_id">
                 <?php foreach($user as $data): ?>
                 <option value="<?= $data['id'] ?>"><?= $data['name'] ?></option>
                 <?php endforeach ?>
+                <option value="modal">Tambah Customer</option>
               </select>
             </div>
             <button type="button" class="btn btn-primary" onclick="postData()">Simpan</button>
@@ -82,6 +84,55 @@
 <?= $this->endSection() ?>
 <?= $this->section('script') ?>
 <script>
+  function saveUser() {
+    const url = `${base_url}dashboard/customer`;
+    
+    $.ajax({
+      url,
+      type: 'POST',
+      data: $('#form').serialize(),
+      dataType: 'JSON',
+      success: ({ success, message }) => {
+        alert(message);
+        if (success) {
+          window.location.href = `${base_url}dashboard/transaction`;
+        }
+      },
+      error: () => {
+        alert('An error occurred while processing your request.');
+      },
+    });
+  }
+
+  $(document).ready(function() {
+    // Listen for changes in the select element
+    $('#user_id').on('change', function() {
+      var selectedValue = $(this).val();
+      
+      if (selectedValue === 'modal') {
+        // Open the modal
+        $('#addUser').modal('show');
+        
+        // Reset the select element to the default value
+        $(this).val('');
+      }
+    });
+  });
+  
+  function handlePaymentTypeChange() {
+        var paymentType = document.getElementById("payment_type").value;
+        var customerField = document.getElementById("customer_field");
+
+        if (paymentType === "tunai") {
+            customerField.style.display = "none";
+            document.getElementById("user_id").value = null;
+        } else {
+            customerField.style.display = "block";
+        }
+    }
+
+  handlePaymentTypeChange();
+  
   function convertKgToG(value, price) {
     // Convert kg to g
     var grams = value * 1000;
@@ -95,24 +146,18 @@
     };
   }
 
-  // Example usage
-  var weightInKg = 0.1;
-  var pricePerKg = 10000;
 
-  var conversionResult = convertKgToG(weightInKg, pricePerKg);
-
-  console.log("Weight in grams: " + conversionResult.grams);
-  console.log("Adjusted price per gram: " + conversionResult.adjustedPrice);
-
-  var totalPrice = pricePerKg * weightInKg;
-  console.log("Total price: " + totalPrice + " rupiah");
-
-
- function addToTable() {
+  function addToTable() {
     // Get form field values
     var nameSelect = document.querySelector('select[name="name"]');
-    var name = nameSelect.options[nameSelect.selectedIndex].text; // Get the selected option text
-    var id = nameSelect.value;
+    var selectedOption = nameSelect.options[nameSelect.selectedIndex];
+    if (!selectedOption.value) {
+      alert("Pilih item!");
+      return; // Exit the function if no item is selected
+    }
+    
+    var name = selectedOption.text;
+    var id = selectedOption.value;
     var price = document.querySelector('input[name="price"]').value;
     var quantity = document.querySelector('input[name="quantity"]').value;
     var unit = document.querySelector('input[name="unit"]').value;
@@ -152,8 +197,8 @@
     deleteButton.textContent = 'Delete';
     deleteButton.classList.add('btn', 'btn-danger');
     deleteButton.addEventListener('click', function() {
-      newRow.remove(); // Remove the row when delete button is clicked
-      updateTotal(); // Update the total after deletion
+        newRow.remove(); // Remove the row when delete button is clicked
+        updateTotal(); // Update the total after deletion
     });
 
     var deleteCell = document.createElement('td');
@@ -165,7 +210,7 @@
     tableBody.appendChild(newRow);
 
     // Clear the form field values
-    document.querySelector('select[name="name"]').selectedIndex = 0;
+    nameSelect.selectedIndex = 0;
     document.querySelector('input[name="price"]').value = '';
     document.querySelector('input[name="quantity"]').value = '';
     document.querySelector('input[name="unit"]').value = '';
@@ -173,6 +218,7 @@
 
     updateTotal(); // Update the total after adding the new row
   }
+
 
   function updateTotal() {
     var tableRows = document.querySelectorAll('#tableBody tr');

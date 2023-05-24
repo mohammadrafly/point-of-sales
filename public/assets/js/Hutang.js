@@ -10,22 +10,28 @@ function formatRupiah(value) {
         success: function(response) {
           if (response.success) {
     
+            if (response.data.cicil > response.data.hutang) {
+              var change = response.data.cicil - response.data.hutang;
+            }
+
+            $('#kembalian').text(formatRupiah(change));
+            $('#kembalian_info').show();
             $('#cicil_hutang_label').text('Total cicil: ' + formatRupiah(response.data.cicil));
-            // set the total price
-            console.log(response);
+
             $('#waktu').text(response.data.created_at);
             $('#supplier_name').text(response.data.supplier);
             $('#debt').text(formatRupiah(response.data.hutang));
             if (response.data.status == 'cicil') {
-              $('#status').html('<span class="badge badge-danger">' + 'Cicil' + '</span>');
+              $('#status').html('<span class="badge badge-danger">Cicil</span>');
             } else if (response.data.status == 'lunas') {
-              $('#status').html('<span class="badge badge-success">' + 'Sudah Bayar' + '</span>');
-            }
+              $('#status').html('<span class="badge badge-success">Sudah Bayar</span>');
+            }                   
+
+            console.log(response.data.status);
     
             if (response.data.status == 'cicil') {
                 $('#button-cicil').attr('hidden', false);
             
-                // Create a new input field for "Cicil Hutang"
                 var cicilHutangInput = $('<input>').attr({
                   'type': 'number',
                   'id': 'cicil_hutang',
@@ -35,14 +41,11 @@ function formatRupiah(value) {
                   'required': true
                 });
             
-                // Append the label and input field to the modal body
                 $('#formDetail').append(cicilHutangInput);
             
-                // Add an event listener to the "Cicil" button
                 $('#button-cicil').on('click', function() {
                   var cicilHutangValue = $('#cicil_hutang').val();
                   if (cicilHutangValue.trim() !== '') {
-                    // Call the cicilHutang function passing the transaction code and cicil hutang value
                     cicilHutang(response.data.id, cicilHutangValue);
                   } else {
                     alert('Please enter a valid Cicil Hutang value.');
@@ -50,13 +53,10 @@ function formatRupiah(value) {
                 });              
               } else {
                 $('#button-cicil').attr('hidden', true);
-                // Remove the input field for "Cicil Hutang"
                 $('#cicil_hutang').remove();
                 $('label[for="cicil_hutang"]').remove();
               }
             
-    
-            console.log(response.data.status)
             $('#detailModal').modal('show');
           }
         },
@@ -123,4 +123,8 @@ function formatRupiah(value) {
   $('#myModal').on('hidden.bs.modal', function () {
       location.reload();
   });
+
+  $('#detailModal').on('hidden.bs.modal', function () {
+    location.reload();
+});
   

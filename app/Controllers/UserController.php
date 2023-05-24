@@ -20,28 +20,14 @@ class UserController extends BaseController
         }
 
         $data = [
-            'username' => $this->request->getVar('username'),
+            'username' => NULL,
             'email' => $this->request->getVar('email'),
             'address' => $this->request->getVar('address'),
             'phone_number' => $this->request->getVar('phone_number'),
-            'password' => password_hash($this->request->getVar('password'), PASSWORD_DEFAULT),
+            'password' => NULL,
             'name' => $this->request->getVar('name'),
             'role' => 'customer',
         ];
-
-        if ($model->like('username', $data['username'])->get()->getResultArray()) {
-            return $this->response->setJSON([
-                'success' => FALSE,
-                'message' => 'Gagal simpan data customer, username telah digunakan.'
-            ]);
-        }
-
-        if ($model->like('email', $data['email'])->get()->getResultArray()) {
-            return $this->response->setJSON([
-                'success' => FALSE,
-                'message' => 'Gagal simpan data customer, email telah digunakan.'
-            ]);
-        }
 
         if ($model->insert($data)) {
             return $this->response->setJSON([
