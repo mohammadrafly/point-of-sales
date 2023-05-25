@@ -41,6 +41,14 @@ class HutangController extends BaseController
 
         $total = array_sum($regularNumbers);
 
+        if (count($regularNumbers) === count($quantities)) {
+            $result = [];
+        
+            for ($i = 0; $i < count($regularNumbers); $i++) {
+                $result[] = $regularNumbers[$i] / $quantities[$i];
+            }
+        }
+
         $data = [
             'kode_hutang' => $hutangCode,
             'supplier' => $this->request->getVar('supplier'),
@@ -61,7 +69,7 @@ class HutangController extends BaseController
                 'name' => $name,
                 'description' => null,
                 'selling_price' => null,
-                'purchase_price' => $regularNumbers[$index],
+                'purchase_price' => $result[$index],
                 'stock' => $quantities[$index],
                 'unit' => $units[$index],
                 'created_at' => $nextDay,

@@ -66,6 +66,10 @@
                   <option value="tunai">Tunai</option>
               </select>
             </div>
+            <div class="form-group" id="bayar_field">
+              <label for="bayar">Bayar</label>
+              <input type="number" class="form-control" id="bayar" name="bayar" />
+            </div>
             <div class="form-group" id="customer_field">
               <label for="payment_type">Customer</label>
               <select class="select2 form-control" id="user_id" name="user_id">
@@ -120,16 +124,21 @@
   });
   
   function handlePaymentTypeChange() {
-        var paymentType = document.getElementById("payment_type").value;
-        var customerField = document.getElementById("customer_field");
+    var paymentType = document.getElementById("payment_type").value;
+    var customerField = document.getElementById("customer_field");
+    var pembayaranField = document.getElementById("bayar_field");
 
-        if (paymentType === "tunai") {
-            customerField.style.display = "none";
-            document.getElementById("user_id").value = null;
-        } else {
-            customerField.style.display = "block";
-        }
+    if (paymentType === "tunai") {
+        customerField.style.display = "none";
+        pembayaranField.style.display = "block";
+        document.getElementById("user_id").value = null;
+    } else {
+        customerField.style.display = "block";
+        pembayaranField.style.display = "none";
+        document.getElementById("bayar").value = '0';
     }
+  }
+
 
   handlePaymentTypeChange();
   
@@ -285,13 +294,23 @@
       totalPrices.push(cells[5].textContent); // Assuming the fifth cell contains the subtotal
     });
 
+    var sum = 0;
+    for (var i = 0; i < totalPrices.length; i++) {
+      var price = parseFloat(totalPrices[i]); // Parse the string value to a floating-point number
+      if (!isNaN(price)) { // Check if the parsed value is a valid number
+        sum += price; // Accumulate the sum
+      }
+    }
+
     // Get the payment_type and user_id values
     var paymentType = document.getElementById('payment_type').value;
     var userId = document.getElementById('user_id').value;
+    var bayar = document.getElementById('bayar').value;
 
     // Add the payment_type, user_id, id_items, quantities, total_prices to the form data
     formData.append('payment_type', paymentType);
     formData.append('user_id', userId);
+    formData.append('cicil', bayar);
     
     idItems.forEach(function(idItem, index) {
       formData.append('id_items[]', idItem);
@@ -299,23 +318,27 @@
       formData.append('total_price[]', totalPrices[index]);
     });
 
-    // Send the POST request
-    fetch(`${base_url}dashboard/transaction`, {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        alert(data.message);
-        location.reload();
-      } else {
-        console.error(data.message);
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+    if (parseFloat(bayar) < sum) {
+      alert("Pembayaran anda kurang!.");
+    } else {
+
+      fetch(`${base_url}dashboard/transaction`, {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert(data.message);
+            location.reload();
+          } else {
+            console.error(data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
   }
 
   $(document).ready(function() {

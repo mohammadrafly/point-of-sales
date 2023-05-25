@@ -40,8 +40,12 @@ function showDetails(transactionCode) {
             $('#kembalian_label').text('');
           }
         } else {
-          $('#cicil_hutang_label').text('');
-          $('#kembalian_label').text('');
+          $('#cicil_hutang_label').text('Total Bayar: ' + formatRupiah(response.data[0].cicil));
+          if (change < 0) {
+            $('#kembalian_label').text('Total Kembalian: ' + formatRupiah(change));
+          } else {
+            $('#kembalian_label').text('Bayar Pas');
+          }
         }
 
         // set the total price
@@ -64,12 +68,12 @@ function showDetails(transactionCode) {
               'id': 'cicil_hutang',
               'name': 'cicil_hutang',
               'class': 'form-control',
-              'placeholder': 'Cicil Hutang',
+              'placeholder': 'Cicil Piutang',
               'required': true
             });
 
             // Create a new label for the input field
-            var cicilHutangLabel = $('<label>').attr('for', 'cicil_hutang').text('Cicil Hutang:');
+            var cicilHutangLabel = $('<label>').attr('for', 'cicil_hutang').text('Cicil Piutang:');
 
             // Append the label and input field to the modal body
             $('#form').append(cicilHutangLabel, cicilHutangInput);

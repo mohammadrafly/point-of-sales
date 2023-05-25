@@ -18,7 +18,7 @@ class TransactionController extends BaseController
         if ($this->request->getMethod(true) !== 'POST') {
             $data = [
                 'content' => $model->findAll(),
-                'barang' => $modelItems->findAll(),
+                'barang' => $items = $modelItems->where('selling_price IS NOT NULL')->findAll(),
                 'user' => $modelUsers->findUserByRole('customer'),
             ];
             return view('pages/dashboard/transaction', $data);
@@ -30,12 +30,15 @@ class TransactionController extends BaseController
         $id_items = $this->request->getPost('id_items[]'); // Get all id_item values
         $quantities = $this->request->getPost('quantity[]'); // Get all quantity values
         $total_prices = $this->request->getPost('total_price[]'); // Get all total_price values
+        $cicil = $this->request->getPost('cicil');
         $user_id = $this->request->getPost('user_id');
         $payment_method = $this->request->getPost('payment_type');
         if ($payment_method == 'hutang') {
             $status = 'cicil';
+            $bayar = '0';
         } else {
             $status = 'done';
+            $bayar = $cicil;
         }
         $transactionCode = 'TRX-' . bin2hex(random_bytes(16));
         $currentDate = date('Y-m-d');
@@ -51,7 +54,7 @@ class TransactionController extends BaseController
                 'total_price' => $total_prices[$i],
                 'status' => $status,
                 'user_id' => $user_id,
-                'cicil' => '0',
+                'cicil' => $bayar,
                 'created_at' => $nextDay,
                 'updated_at' => $nextDay
 
@@ -60,10 +63,40 @@ class TransactionController extends BaseController
         }
         
         if ($model->insertBatch($transactions)) {
-            return $this->response->setJSON([
-                'success' => TRUE,
-                'message' => 'Berhasil melakukan transaksi'
-            ]);
+            $updatedItems = [];
+
+            for ($i = 0; $i < count($id_items); $i++) {
+                $id_item = $id_items[$i];
+                $quantity = $quantities[$i];
+                
+                // Retrieve the item by its ID
+                $item = $modelItems->find($id_item);
+                
+                if ($item) {
+                    // Update the item's stock by decrementing the quantity
+                    $item['stock'] -= $quantity;
+
+                    // Set the updated_at field
+                    $item['updated_at'] = $nextDay;
+                    
+                    // Add the updated item to the array
+                    $updatedItems[] = (array) $item;
+                }
+            }
+            if (!empty($updatedItems)) {
+                // Perform batch update
+                $modelItems->updateBatch($updatedItems, 'id');
+                
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'Berhasil melakukan transaksi'
+                ]);
+            } else {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Tidak ada item yang ditemukan'
+                ]);
+            }
         } else {
             return $this->response->setJSON([
                 'success' => FALSE,
