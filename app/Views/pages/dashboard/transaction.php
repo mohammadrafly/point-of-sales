@@ -318,10 +318,9 @@
       formData.append('total_price[]', totalPrices[index]);
     });
 
-    if (parseFloat(bayar) < sum) {
+    if (paymentType === 'tunai' && parseFloat(bayar) < sum) {
       alert("Pembayaran anda kurang!.");
     } else {
-
       fetch(`${base_url}dashboard/transaction`, {
         method: 'POST',
         body: formData
