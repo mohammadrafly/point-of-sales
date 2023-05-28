@@ -63,12 +63,10 @@ class TransaksiController extends BaseController
         } else {
             $status = 'cicil';
         }
-        $currentDate = date('Y-m-d');
-        $nextDay = date('Y-m-d', strtotime($currentDate . ' +1 day'));
         $data = [
             'status' => $status,
             'cicil' => $newCicilAmount,
-            'updated_at' => $nextDay,
+            'updated_at' => date('Y-m-d'),
         ];
         $model->where('transaction_code', $transactionCode)->set($data)->update();
 
@@ -103,46 +101,48 @@ class TransaksiController extends BaseController
         $endDate = $this->request->getVar('endDate');
 
         $data = $model->RangeDate($startDate, $endDate, 'tunai', 'done');
-        //dd($data);
         $spreadsheet = new Spreadsheet();
 
-        $spreadsheet->getActiveSheet()->getStyle('D')->getNumberFormat()
-                    ->setFormatCode('#,##0.00');
+        $spreadsheet->getActiveSheet()->getStyle('D')->getNumberFormat()->setFormatCode('#,##0.00');
         $spreadsheet->getActiveSheet()->mergeCells('A1:F1');
-        $spreadsheet->getActiveSheet()->getStyle('A1')
-                    ->getAlignment()
-                    ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-        $spreadsheet->getActiveSheet()->getStyle('B')->getNumberFormat()
-                    ->setFormatCode('0000000000000000');
+        $spreadsheet->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $spreadsheet->getActiveSheet()->getStyle('B')->getNumberFormat()->setFormatCode('0000000000000000');
         $spreadsheet->setActiveSheetIndex(0)
-                    ->setCellValue('A1', 'Transaksi Tunai')
-                    ->setCellValue('A2', 'Kode Transaksi')
-                    ->setCellValue('B2', 'Customer')
-                    ->setCellValue('C2', 'Total')
-                    ->setCellValue('D2', 'Status')
-                    ->setCellValue('E2', 'Waktu Transaksi');
+            ->setCellValue('A1', 'Transaksi Tunai')
+            ->setCellValue('A2', 'Kode Transaksi')
+            ->setCellValue('B2', 'Customer')
+            ->setCellValue('C2', 'Total')
+            ->setCellValue('D2', 'Status')
+            ->setCellValue('E2', 'Waktu Transaksi');
         $column = 3;
         $transactionCodes = array_column($data, 'transaction_code');
         $uniqueTransactionCodes = array_unique($transactionCodes);
-        
+
         foreach ($uniqueTransactionCodes as $transactionCode) {
             $totalPrice = 0;
+            $hasPaymentTunai = false; // Flag to check if any payment is "tunai" for the transaction
             foreach ($data as $row) {
                 if ($row->transaction_code == $transactionCode) {
                     $totalPrice += $row->total_price;
+                    if ($row->payment_type == 'tunai') {
+                        $hasPaymentTunai = true;
+                    }
                 }
             }
-        
+
             $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('A' . $column, $transactionCode)
-                ->setCellValue('B' . $column, $data[0]->nama_user)
                 ->setCellValue('C' . $column, $totalPrice)
                 ->setCellValue('D' . $column, $data[0]->status)
                 ->setCellValue('E' . $column, $data[0]->created_at);
-        
+
+            if (!$hasPaymentTunai) {
+                $spreadsheet->setActiveSheetIndex(0)->setCellValue('B' . $column, $data[0]->nama_user);
+            }
+
             $column++;
         }
-        
+
         // tulis dalam format .xlsx
         $writer = new Xlsx($spreadsheet);
         $fileName = 'Laporan Transaksi Tunai '.$startDate.' - '.$endDate;

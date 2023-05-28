@@ -104,22 +104,26 @@ class Transactions extends Model
     public function RangeDate($start, $end, $payment, $status = '')
     {
         $query = $this->db->table('transactions')
-                ->select('
-                    transactions.*,
-                    transactions.created_at as waktu_transaksi,
-                    users.name as nama_user
-                ')
-                ->join('users', 'transactions.user_id = users.id')
-                ->where('transactions.payment_type', $payment)
-                ->where('transactions.created_at BETWEEN "'. date('Y-m-d', strtotime($start)). '" AND "'. date('Y-m-d', strtotime($end)).'"');
+            ->select('
+                transactions.*,
+                transactions.created_at as waktu_transaksi
+            ')
+            ->where('transactions.created_at BETWEEN "'. date('Y-m-d', strtotime($start)). '" AND "'. date('Y-m-d', strtotime($end)).'"');
+    
+        if ($payment !== 'tunai') {
+            $query->join('users', 'transactions.user_id = users.id')
+                  ->select('users.name as nama_user');
+        }
+    
+        $query->where('transactions.payment_type', $payment);
     
         if ($status !== '') {
             $query->where('transactions.status', $status);
         }
     
         $query->orderBy('transactions.created_at', 'DESC');
-        
+    
         $result = $query->get()->getResult();
         return $result;
-    }    
+    }
 }
