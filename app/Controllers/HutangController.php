@@ -27,7 +27,6 @@ class HutangController extends BaseController
         }
 
         $currentDate = date('Y-m-d');
-        $nextDay = date('Y-m-d', strtotime($currentDate . ' +1 day'));
         $names = $this->request->getVar('name[]');
         $purchasePrices = $this->request->getVar('purchase_price[]');
         $units = $this->request->getVar('unit[]');
@@ -55,8 +54,8 @@ class HutangController extends BaseController
             'hutang' => $total,
             'cicil' => '0',
             'status' => 'cicil',
-            'created_at' => $nextDay,
-            'updated_at' => $nextDay
+            'created_at' => $currentDate,
+            'updated_at' => $currentDate
         ];
 
         $datas = [];
@@ -72,8 +71,8 @@ class HutangController extends BaseController
                 'purchase_price' => $result[$index],
                 'stock' => $quantities[$index],
                 'unit' => $units[$index],
-                'created_at' => $nextDay,
-                'updated_at' => $nextDay
+                'created_at' => $currentDate,
+                'updated_at' => $currentDate
             ];
             $datas[] = $data2;
         }
@@ -164,7 +163,6 @@ class HutangController extends BaseController
         $status = $this->request->getVar('status');
 
         $data = $model->RangeDate($startDate, $endDate, $status);
-        //dd($data);
         $spreadsheet = new Spreadsheet();
 
         $spreadsheet->getActiveSheet()->getStyle('D')->getNumberFormat()
