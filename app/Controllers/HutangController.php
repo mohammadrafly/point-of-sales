@@ -25,8 +25,7 @@ class HutangController extends BaseController
             ];
             return view('pages/dashboard/hutang', $data);
         }
-
-        $currentDate = date('Y-m-d');
+        
         $names = $this->request->getVar('name[]');
         $purchasePrices = $this->request->getVar('purchase_price[]');
         $units = $this->request->getVar('unit[]');
@@ -54,8 +53,8 @@ class HutangController extends BaseController
             'hutang' => $total,
             'cicil' => '0',
             'status' => 'cicil',
-            'created_at' => $currentDate,
-            'updated_at' => $currentDate
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
         ];
 
         $datas = [];
@@ -71,8 +70,8 @@ class HutangController extends BaseController
                 'purchase_price' => $result[$index],
                 'stock' => $quantities[$index],
                 'unit' => $units[$index],
-                'created_at' => $currentDate,
-                'updated_at' => $currentDate
+                'created_at' => date('Y-m-d'),
+                'updated_at' => date('Y-m-d')
             ];
             $datas[] = $data2;
         }

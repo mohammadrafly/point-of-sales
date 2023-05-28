@@ -197,6 +197,8 @@
         var status = document.getElementById("status").textContent.trim();
         var tableRows = document.getElementById("form").querySelectorAll("table tbody tr");
         var total = document.getElementById("total").textContent.trim();
+        var bayar = document.getElementById("cicil_hutang_label").textContent.trim();
+        var kembalian = document.getElementById("kembalian_label").textContent.trim();
 
         var doc = new jsPDF();
 
@@ -213,8 +215,11 @@
 
         // Add the transaction details
         doc.text("Waktu Transaksi: " + waktu, 20, 30);
-        doc.text("Customer: " + customer, 20, 40);
-        doc.text("Status Transaksi: " + status, 20, 50);
+        doc.text("Customer: " + customer, 20, 35);
+        doc.text("Status Transaksi: " + status, 20, 40);
+        doc.text(bayar, 20, 45);
+        doc.text("Total Pembelian: " + total, 20, 50);
+        doc.text(kembalian, 20, 55);
 
         // Set the font size and style for the table
         doc.setFontSize(12);

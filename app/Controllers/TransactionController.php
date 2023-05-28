@@ -18,7 +18,7 @@ class TransactionController extends BaseController
         if ($this->request->getMethod(true) !== 'POST') {
             $data = [
                 'content' => $model->findAll(),
-                'barang' => $items = $modelItems->where('selling_price IS NOT NULL')->findAll(),
+                'barang' => $modelItems->where('selling_price IS NOT NULL')->findAll(),
                 'user' => $modelUsers->findUserByRole('customer'),
             ];
             return view('pages/dashboard/transaction', $data);
@@ -41,8 +41,6 @@ class TransactionController extends BaseController
             $bayar = $cicil;
         }
         $transactionCode = 'TRX-' . bin2hex(random_bytes(16));
-        $currentDate = date('Y-m-d');
-        $nextDay = date('Y-m-d', strtotime($currentDate . ' +1 day'));
 
         // Loop through all the values and create an array for each transaction
         for ($i = 0; $i < count($id_items); $i++) {
@@ -55,8 +53,8 @@ class TransactionController extends BaseController
                 'status' => $status,
                 'user_id' => $user_id,
                 'cicil' => $bayar,
-                'created_at' => $nextDay,
-                'updated_at' => $nextDay
+                'created_at' => date('Y-m-d'),
+                'updated_at' => date('Y-m-d')
 
             ];
             $transactions[] = $transaction; // Add the transaction to the array
@@ -77,7 +75,7 @@ class TransactionController extends BaseController
                     $item['stock'] -= $quantity;
 
                     // Set the updated_at field
-                    $item['updated_at'] = $nextDay;
+                    $item['updated_at'] = date('Y-m-d');
                     
                     // Add the updated item to the array
                     $updatedItems[] = (array) $item;
