@@ -65,13 +65,13 @@
                     <i class="fas fa-fw fa-table"></i>
                     <span>Barang</span></a>
             </li>
-
+            
+            <?php if(session()->get('role') === 'admin'): ?>
             <hr class="sidebar-divider">
             <div class="sidebar-heading">
                 Data Pengguna
             </div>
 
-            <?php if(session()->get('role') === 'admin'): ?>
             <li class="nav-item">
                 <a class="nav-link" href="<?= base_url('dashboard/kasir') ?>">
                     <i class="fas fa-fw fa-table"></i>

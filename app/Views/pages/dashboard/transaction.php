@@ -11,26 +11,26 @@
         <div class="form-row mb-5">
           <div class="col-md-3">
             <select class="form-control select2" name="name" onchange="updateFields(this)">
-              <option value="">Select Item</option>
+              <option>Pilih Barang</option>
               <?php foreach($barang as $data): ?>
                 <option value="<?= $data['id'] ?>" data-price="<?= $data['selling_price'] ?>" data-unit="<?= $data['unit'] ?>"><?= $data['name'] ?> - <?= $data['unit'] ?></option>
               <?php endforeach ?>
             </select>
           </div>
           <div class="col-md-2">
-            <input type="text" class="form-control" name="price" placeholder="Price" readonly>
+            <input type="text" class="form-control" name="price" placeholder="Harga" readonly>
           </div>
           <div class="col-md-2">
-            <input type="number" class="form-control" name="quantity" placeholder="Quantity" oninput="updateSubtotal(this)">
+            <input type="number" class="form-control" name="quantity" placeholder="Jumlah Barang" oninput="updateSubtotal(this)">
           </div>
           <div class="col-md-2">
-            <input type="text" class="form-control" name="unit" placeholder="Unit" readonly>
+            <input type="text" class="form-control" name="unit" placeholder="Satuan" readonly>
           </div>
           <div class="col-md-2">
             <input type="text" class="form-control" name="subtotal" placeholder="Subtotal" readonly>
           </div>
           <div class="col-md-1">
-            <button type="button" class="btn btn-primary" onclick="addToTable()">Add</button>
+            <button type="button" class="btn btn-primary" onclick="addToTable()">Tambah</button>
           </div>
         </div>
           <form id="my-form">
@@ -62,8 +62,9 @@
             <div class="form-group">
               <label for="payment_type">Metode Pembayaran</label>
               <select class="form-control" id="payment_type" name="payment_type" onchange="handlePaymentTypeChange()">
-                  <option value="hutang">Piutang</option>
-                  <option value="tunai">Tunai</option>
+                <option>Pilih metode pembayaran</option>  
+                <option value="hutang">Piutang</option>
+                <option value="tunai">Tunai</option>
               </select>
             </div>
             <div class="form-group" id="bayar_field">
@@ -71,12 +72,12 @@
               <input type="number" class="form-control" id="bayar" name="bayar" />
             </div>
             <div class="form-group" id="customer_field">
-              <label for="payment_type">Customer</label>
+              <label for="payment_type">Pelanggan</label>
               <select class="select2 form-control" id="user_id" name="user_id">
                 <?php foreach($user as $data): ?>
                 <option value="<?= $data['id'] ?>"><?= $data['name'] ?></option>
                 <?php endforeach ?>
-                <option value="modal">Tambah Customer</option>
+                <option value="modal">Tambah Pelanggan</option>
               </select>
             </div>
             <button type="button" class="btn btn-primary" onclick="postData()">Simpan</button>
@@ -331,7 +332,7 @@
             alert(data.message);
             location.reload();
           } else {
-            console.error(data.message);
+            alert(data.message);
           }
         })
         .catch(error => {

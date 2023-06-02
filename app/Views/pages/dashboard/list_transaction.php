@@ -5,7 +5,7 @@
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
                             <h6 class="m-0 font-weight-bold text-primary">Data Transaksi</h6>
                             <div>
-                                <button class="btn btn-success" data-toggle="modal" data-target="#dateRangeModal">Export to Excel</button>
+                                <button class="btn btn-success" data-toggle="modal" data-target="#dateRangeModal">Cetak Excel</button>
                             </div>
                         </div>
                         <a href="<?= base_url('dashboard/transaction') ?>" class="btn btn-primary">
@@ -16,7 +16,7 @@
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="dateRangeModalLabel">Select Date Range</h5>
+                                        <h5 class="modal-title" id="dateRangeModalLabel">Pilih waktu</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
@@ -25,19 +25,19 @@
                                     <div class="modal-body">
                                         <!-- Date range selection inputs -->
                                         <div class="form-group">
-                                            <label for="startDate">Start Date</label>
+                                            <label for="startDate">Tanggal Mulai</label>
                                             <input type="date" class="form-control" id="startDate" name="startDate">
                                         </div>
                                         <div class="form-group">
-                                            <label for="endDate">End Date</label>
+                                            <label for="endDate">Tanggal Akhir</label>
                                             <input type="date" class="form-control" id="endDate" name="endDate">
                                         </div>
                                         <?php if (!$tunai): ?>
                                             <div class="form-group">
                                                 <label for="status">Status</label>
                                                 <select class="form-control" id="status" name="status">
-                                                    <option value="">All</option>
-                                                    <option value="done">Lunas</option>
+                                                    <option value="">Semua</option>
+                                                    <option value="done">Sudah Lunas</option>
                                                     <option value="cicil">Cicil</option>
                                                 </select>
                                             </div>
@@ -45,8 +45,8 @@
                                         <input hidden type="text" value="<?= $tunai ? 'tunai' : 'hutang' ?>" name="payment_type">
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Export</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                                        <button type="submit" class="btn btn-primary">Cetak</button>
                                     </div>
                                 </form>
                                 </div>
@@ -66,7 +66,7 @@
                                             <div class="col-md-12">
                                                 <div style="font-weight: bold;">Waktu Transaksi: <span id="waktu" style="font-weight: normal;"></span></div>
                                                 <?php if(!$tunai): ?>
-                                                <div style="font-weight: bold;">Customer: <span id="customer" style="font-weight: normal;"></span></div>
+                                                <div style="font-weight: bold;">Pelanggan: <span id="customer" style="font-weight: normal;"></span></div>
                                                 <?php endif ?>
                                                 <div style="font-weight: bold;">Kode Transaksi: <span id="kode_transaksi" style="font-weight: normal;"></span></div>
                                                 <div style="font-weight: bold;">Status Transaksi: <span id="status" style="font-weight: normal;"></span></div>
@@ -99,9 +99,9 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutuk</button>
                                         <button type="button" id="button-cicil" hidden class="btn btn-warning">Cicil</button>
-                                        <button type="button" class="btn btn-primary" onclick="printModal()">Print</button>
+                                        <button type="button" class="btn btn-primary" onclick="printModal()">Cetak</button>
                                     </div>
                                 </div>
                             </div>
@@ -113,7 +113,7 @@
                                         <tr>
                                             <th>Kode Transaksi</th>
                                             <?php if(!$tunai): ?>
-                                            <th>Customer</th>
+                                            <th>Pelanggan</th>
                                             <?php endif ?>
                                             <th>Total</th>
                                             <th>Status</th>
@@ -151,7 +151,9 @@
                                                 $merged_data[$transaction_code]['total_price'] += $data['total_price'];
                                             }
                                         }
-                                        
+                                        usort($merged_data, function($a, $b) {
+                                            return $a['created_at'] <=> $b['created_at'];
+                                        });
                                         // Output the merged data in the table
                                         foreach ($merged_data as $data):
                                         ?>
@@ -160,7 +162,7 @@
                                                 <?php if ($data['payment_type'] != 'tunai'): ?>
                                                     <td><?= $data['nama_user'] ?></td>
                                                 <?php endif; ?>
-                                                <td><?= number_to_currency($data['total_price'], 'IDR') ?></td>
+                                                <td><?= empty($data['total_price']) ? '0' : number_to_currency($data['total_price'], 'IDR') ?></td>
                                                 <td>
                                                     <?php if($data['status'] == 'cicil'): ?>
                                                         <span class="badge badge-warning">Cicil</span>
@@ -174,6 +176,9 @@
                                                 <td>
                                                     <button onclick="showDetails('<?= $data['transaction_code'] ?>')" class="btn btn-primary btn-sm mr-2">
                                                         <i class="fas fa-eye"></i> Detail Transaksi
+                                                    </button>
+                                                    <button onclick="deleteData('<?= $data['transaction_code'] ?>')" class="btn btn-danger btn-sm mr-2">
+                                                        <i class="fas fa-trash"></i> Hapus
                                                     </button>
                                                 </td>
                                             </tr>

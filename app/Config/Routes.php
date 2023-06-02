@@ -73,6 +73,8 @@ $routes->group('dashboard', ['filter' => 'auth'],function ($routes) {
         $routes->get('type/hutang', 'TransaksiController::indexHutang');
         $routes->get('details/(:any)', 'TransaksiController::details/$1');
         $routes->post('bayar/(:any)', 'TransaksiController::bayarHutang/$1');
+        $routes->get('delete/(:any)', 'TransactionController::delete/$1');
+        $routes->match(['POST', 'GET'], 'update/(:num)', 'TransactionController::update/$1');
     });
 
     $routes->group('export', function ($routes) {
@@ -83,8 +85,6 @@ $routes->group('dashboard', ['filter' => 'auth'],function ($routes) {
 
     $routes->group('transaction', function ($routes) {
         $routes->match(['POST', 'GET'], '/', 'TransactionController::index');
-        $routes->get('delete/(:num)', 'TransactionController::delete/$1');
-        $routes->match(['POST', 'GET'], 'update/(:num)', 'TransactionController::update/$1');
     });
 });
 

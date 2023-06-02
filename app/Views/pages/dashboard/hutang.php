@@ -5,16 +5,17 @@
                         <div class="card-body">
                             <div class="form-row mb-5">
                                 <div class="col-md-3">
-                                    <input type="text" class="form-control" name="name" placeholder="Name">
+                                    <input type="text" class="form-control" name="name" placeholder="Nama Barang">
                                 </div>
                                 <div class="col-md-2">
-                                    <input type="number" class="form-control" name="price" placeholder="Price">
+                                    <input type="number" class="form-control" name="price" placeholder="Harga">
                                 </div>
                                 <div class="col-md-2">
-                                    <input type="number" class="form-control" name="quantity" placeholder="Quantity" oninput="updateSubtotal(this)">
+                                    <input type="number" class="form-control" name="quantity" placeholder="Jumlah Barang" oninput="updateSubtotal(this)">
                                 </div>
                                 <div class="col-md-2">
                                     <select class="form-control" id="unit" name="unit">
+                                        <option>Pilih satuan</option>
                                         <option value="KG">KILOGRAM</option>
                                         <option value="PCS">PCS</option>
                                         <option value="RENCENG">RENCENG</option>
@@ -26,7 +27,7 @@
                                     <input type="text" class="form-control" name="subtotal" placeholder="Subtotal" readonly>
                                 </div>
                                 <div class="col-md-1">
-                                    <button type="button" class="btn btn-primary" onclick="addToTable()">Add</button>
+                                    <button type="button" class="btn btn-primary" onclick="addToTable()">Tambah</button>
                                 </div>
                             </div>
                             <form id="my-form">
@@ -67,7 +68,7 @@
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
                             <h6 class="m-0 font-weight-bold text-primary">Data Hutang</h6>
                             <div>
-                                <button class="btn btn-success" data-toggle="modal" data-target="#dateRangeModal">Export to Excel</button>
+                                <button class="btn btn-success" data-toggle="modal" data-target="#dateRangeModal">Cetak Excel</button>
                             </div>
                         </div>
                         <div class="modal fade" id="dateRangeModal" tabindex="-1" role="dialog" aria-labelledby="dateRangeModalLabel" aria-hidden="true">
@@ -83,25 +84,25 @@
                                         <div class="modal-body">
                                             <!-- Date range selection inputs -->
                                             <div class="form-group">
-                                                <label for="startDate">Start Date</label>
+                                                <label for="startDate">Tanggal Mulai</label>
                                                 <input type="date" class="form-control" id="startDate" name="startDate">
                                             </div>
                                             <div class="form-group">
-                                                <label for="endDate">End Date</label>
+                                                <label for="endDate">Tanggal Akhir</label>
                                                 <input type="date" class="form-control" id="endDate" name="endDate">
                                             </div>
                                                 <div class="form-group">
                                                     <label for="status">Status</label>
                                                     <select class="form-control" id="status" name="status">
-                                                        <option value="">All</option>
-                                                        <option value="lunas">Lunas</option>
+                                                        <option value="">Semua</option>
+                                                        <option value="lunas">Sudah Lunas</option>
                                                         <option value="cicil">Cicil</option>
                                                     </select>
                                                 </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary">Export</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                                            <button type="submit" class="btn btn-primary">Cetak</button>
                                         </div>
                                     </form>
                                 </div>
@@ -162,8 +163,8 @@
                                             <th>Supplier</th>
                                             <th>Hutang</th>
                                             <th>Status</th>
-                                            <th>Created At</th>
-                                            <th>Updated At</th>
+                                            <th>Dibuat tanggal</th>
+                                            <th>Diperbarui tanggal</th>
                                             <th>Opsi</th>
                                         </tr>
                                     </thead>
