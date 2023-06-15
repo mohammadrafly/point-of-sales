@@ -29,7 +29,7 @@ class TransaksiController extends BaseController
             'tunai' => false,
             'content' => $model->joinTransactionsWithUsersByPaymentType('hutang'),
         ];
-
+        //dd($data);
         return view('pages/dashboard/list_transaction', $data);
     }
 

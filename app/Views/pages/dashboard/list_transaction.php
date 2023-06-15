@@ -114,6 +114,8 @@
                                             <th>Kode Transaksi</th>
                                             <?php if(!$tunai): ?>
                                             <th>Pelanggan</th>
+                                            <th>Nomor HP</th>
+                                            <th>Alamat</th>
                                             <?php endif ?>
                                             <th>Total</th>
                                             <th>Status</th>
@@ -137,6 +139,7 @@
                                                     'total_price' => $data['total_price'],
                                                     'status' => $data['status'],
                                                     'payment_type' => $data['payment_type'],
+
                                                     'created_at' => $data['created_at'],
                                                     'updated_at' => $data['updated_at'],
                                                     'id_items' => [$data['id_item']],
@@ -144,6 +147,8 @@
                                                 ];
                                                 if ($data['payment_type'] != 'tunai') {
                                                     $merged_data[$transaction_code]['nama_user'] = $data['nama_user'];
+                                                    $merged_data[$transaction_code]['alamat_user'] = $data['alamat_user'];
+                                                    $merged_data[$transaction_code]['nomor_user'] = $data['nomor_user'];
                                                 }
                                             } else {
                                                 $merged_data[$transaction_code]['id_items'][] = $data['id_item'];
@@ -161,6 +166,8 @@
                                                 <td><?= $data['transaction_code'] ?></td>
                                                 <?php if ($data['payment_type'] != 'tunai'): ?>
                                                     <td><?= $data['nama_user'] ?></td>
+                                                    <td><?= $data['nomor_user'] ?></td>
+                                                    <td><?= $data['alamat_user'] ?></td>
                                                 <?php endif; ?>
                                                 <td><?= empty($data['total_price']) ? '0' : number_to_currency($data['total_price'], 'IDR') ?></td>
                                                 <td>

@@ -43,6 +43,12 @@ $routes->group('dashboard', ['filter' => 'auth'],function ($routes) {
         $routes->match(['POST', 'GET'], 'update/(:num)', 'ItemController::update/$1');
     });
 
+    $routes->group('pembelian', function ($routes) {
+        $routes->match(['POST', 'GET'], 'list/(:any)', 'PembelianController::index/$1');
+        $routes->get('detail/(:num)', 'PembelianController::detail/$1');
+        $routes->get('delete/(:num)', 'PembelianController::delete/$1');
+    });
+
     $routes->group('customer', function ($routes) {
         $routes->match(['POST', 'GET'], '/', 'UserController::index');
         $routes->get('delete/(:num)', 'UserController::delete/$1');

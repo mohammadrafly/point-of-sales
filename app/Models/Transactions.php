@@ -86,6 +86,8 @@ class Transactions extends Model
             ->select('
                 transactions.*,
                 users.name as nama_user,
+                users.address as alamat_user,
+                users.phone_number as nomor_user
             ')
             ->join('users', 'transactions.user_id = users.id')
             ->where('payment_type', $type)

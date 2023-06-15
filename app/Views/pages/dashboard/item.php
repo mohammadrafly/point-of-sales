@@ -7,7 +7,7 @@
                         </div>
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-                        Tambah Barang
+                        Tambah Barang Baru
                         </button>
 
                         <!-- Modal -->
@@ -15,7 +15,7 @@
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                 <div class="modal-header">
-                                    <h4 class="modal-title" id="myModalLabel">Tambah Barang</h4>
+                                    <h4 class="modal-title" id="myModalLabel">Tambah Barang Baru</h4>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                     </button>
@@ -75,7 +75,9 @@
                                             <th>Stock</th>
                                             <th>Dibuat tanggal</th>
                                             <th>Diperbarui tanggal</th>
+                                            <?php if(session()->get('role') === 'admin'): ?>
                                             <th>Opsi</th>
+                                            <?php endif ?> 
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -97,7 +99,11 @@
                                             <td><?= $data['stock'] ?>  <?= $data['unit'] ?></td>
                                             <td><?= $data['created_at'] ?></td>
                                             <td><?= $data['updated_at'] ?></td>
+                                            <?php if (session()->get('role') === 'admin'): ?>
                                             <td>
+                                                <button onclick="pembelian('<?= $data['kode_barang'] ?>')" class="btn btn-success btn-sm mr-2">
+                                                    <i class="fas fa-plus"></i> Pembelian Barang
+                                                </button>
                                                 <button onclick="edit(<?= $data['id'] ?>)" class="btn btn-primary btn-sm mr-2">
                                                     <i class="fas fa-edit"></i> Edit
                                                 </button>
@@ -105,6 +111,7 @@
                                                     <i class="fas fa-trash"></i> Delete
                                                 </button>
                                             </td>
+                                            <?php endif ?>
                                         </tr>
                                     <?php endforeach ?>
                                     </tbody>
@@ -114,5 +121,10 @@
                     </div>
 <?= $this->endSection() ?>
 <?= $this->section('script') ?>
+<script> 
+function pembelian(code) {
+    window.location.href = `${base_url}dashboard/pembelian/list/${code}`;
+}
+</script>
 <script src="<?= base_url('assets/js/barang.js') ?>"></script>
 <?= $this->endSection() ?>

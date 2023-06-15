@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\Hutang;
 use App\Models\Items;
 use App\Models\Users;
 use App\Models\Transactions;
@@ -14,12 +15,20 @@ class DashboardController extends BaseController
         $json_file_path = WRITEPATH . 'data-toko.json';
         $json_data = $this->read_file($json_file_path);
         $modelBarang = new Items();
-        $modelUser = new Users();
-        $modelTransaksi = new Transactions();
+        $modelTransaksi = new Transactions();   
+        $modelHutang = new Hutang();
+        
+        //merge and count every transaction_code
+        $query = $modelTransaksi->select('COUNT(DISTINCT transaction_code) as total_count')
+                                ->where('payment_type', 'hutang')
+                                ->get();
+        $result = $query->getRow();
+        $totalCount = $result->total_count;
 
+        //dd($totalCount);
         $data = [
-            'jumlah_kasir' => $modelUser->where('role', 'kasir')->countAllResults(),
-            'jumlah_pengguna' => $modelUser->countAllResults(),
+            'jumlah_hutang' => $modelHutang->countAllResults(),
+            'jumlah_piutang' => $totalCount,
             'jumlah_transaksi' => $modelTransaksi->countAllResults(),
             'jumlah_barang' => $modelBarang->countAllResults(), 
             'data_toko' => json_decode($json_data, true),

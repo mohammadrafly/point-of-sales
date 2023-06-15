@@ -13,7 +13,7 @@
             <select class="form-control select2" name="name" onchange="updateFields(this)">
               <option>Pilih Barang</option>
               <?php foreach($barang as $data): ?>
-                <option value="<?= $data['id'] ?>" data-price="<?= $data['selling_price'] ?>" data-unit="<?= $data['unit'] ?>"><?= $data['name'] ?> - <?= $data['unit'] ?></option>
+                <option value="<?= $data['id'] ?>" data-price="<?= $data['selling_price'] ?>" data-unit="<?= $data['unit'] ?>" data-stok="<?= $data['stock'] ?>"><?= $data['name'] ?> - <?= $data['unit'] ?></option>
               <?php endforeach ?>
             </select>
           </div>
@@ -23,8 +23,11 @@
           <div class="col-md-2">
             <input type="number" class="form-control" name="quantity" placeholder="Jumlah Barang" oninput="updateSubtotal(this)">
           </div>
-          <div class="col-md-2">
+          <div class="col-md-1">
             <input type="text" class="form-control" name="unit" placeholder="Satuan" readonly>
+          </div>
+          <div class="col-md-1">
+            <input type="text" class="form-control" name="stok" placeholder="Stok" readonly>
           </div>
           <div class="col-md-2">
             <input type="text" class="form-control" name="subtotal" placeholder="Subtotal" readonly>
@@ -165,6 +168,14 @@
       alert("Pilih item!");
       return; // Exit the function if no item is selected
     }
+
+    var stok = document.querySelector('input[name="stok"]');
+    var totalStok = stok.value;
+    console.log(totalStok)
+    if (totalStok == 0) {
+      alert("Stok Habis");
+      return;
+    }
     
     var name = selectedOption.text;
     var id = selectedOption.value;
@@ -257,9 +268,11 @@
     var priceInput = selectElement.parentNode.parentNode.querySelector('input[name="price"]');
     var unitInput = selectElement.parentNode.parentNode.querySelector('input[name="unit"]');
     var subtotalInput = selectElement.parentNode.parentNode.querySelector('input[name="subtotal"]');
+    var stok = selectElement.parentNode.parentNode.querySelector('input[name="stok"]');
     
     priceInput.value = selectedOption.getAttribute('data-price');
     unitInput.value = selectedOption.getAttribute('data-unit');
+    stok.value = selectedOption.getAttribute('data-stok');
     subtotalInput.value = '';
   }
 
